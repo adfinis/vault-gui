@@ -1,0 +1,40 @@
+{
+  "name": "vault-gui",
+  "version": "1.0.0",
+  "author": "c0rydoras",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "dev:tauri": "vite --config vite.config.tauri.js",
+    "build:tauri": "vite build --config vite.config.tauri.js",
+    "preview": "vite preview",
+    "eslint": "eslint src",
+    "eslint:fix": "eslint src --fix"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "4.1.1",
+    "@types/node": "20.11.0",
+    "@typescript-eslint/eslint-plugin": "6.18.1",
+    "@typescript-eslint/parser": "6.18.1",
+    "autoprefixer": "10.4.16",
+    "eslint": "8.56.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-prettier": "5.1.3",
+    "lightningcss": "1.22.1",
+    "postcss": "8.4.33",
+    "prettier": "3.1.1",
+    "prettier-plugin-tailwindcss": "0.5.11",
+    "tailwindcss": "3.4.1",
+    "typescript": "5.3.3",
+    "vite": "5.0.11",
+    "vite-plugin-solid": "2.8.0",
+    "vite-plugin-tauri": "3.3.0"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "1.5.3",
+    "@tauri-apps/cli": "1.5.9",
+    "solid-js": "1.8.10"
+  }
+}
