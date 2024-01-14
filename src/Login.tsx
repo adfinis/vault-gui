@@ -4,17 +4,15 @@ import { useAppContext } from './context'
 
 const [url, setUrl] = createSignal('')
 
-
-
 const Login: Component = () => {
   const { contextValue, updateContext } = useAppContext()
-  const [ error, setError ] = createSignal('')
+  const [error, setError] = createSignal('')
   const oidcAuth = () => {
     console.log('Called OIDC Auth')
     void (async () => {
       try {
         const res: string = await invoke('oidc_auth', { address: url(), mount: 'oidc' })
-        updateContext({page: "home"})
+        updateContext({ page: 'home' })
       } catch (e) {
         console.log(e)
       }
@@ -39,7 +37,11 @@ const Login: Component = () => {
       >
         OIDC Auth
       </button>
-    {error() && <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">{error()}</div>}
+      {error() && (
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+          {error()}
+        </div>
+      )}
     </div>
   )
 }

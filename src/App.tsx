@@ -37,6 +37,7 @@ const App: Component = () => {
         const data: string[] = await invoke('list_kvs')
         console.log(typeof data, data)
         if (Array.isArray(data)) {
+          data.sort()
           setKvs(
             data.map(kv => ({ kv, path: '', icon: '🔒', displaySecret: displaySecret }))
           )
@@ -77,7 +78,11 @@ const App: Component = () => {
           <main class="flex-1">
             {contextValue().page === 'login' && <Login />}
             {contextValue().page === 'view' && <SecretView />}
-            {contextValue().page === 'home' && <div class="p-4">Login successful! Select a KV on the left to get started.</div>}
+            {contextValue().page === 'home' && (
+              <div class="p-4">
+                Login successful! Select a KV on the left to get started.
+              </div>
+            )}
             <button
               class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               onClick={showKvs}
