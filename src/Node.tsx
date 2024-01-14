@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/tauri'
 import { createSignal, For, type Component } from 'solid-js'
+import { useAppContext } from './context'
 
 type NodeProps = {
   icon: string
@@ -9,17 +10,22 @@ type NodeProps = {
 }
 
 const Node: Component<NodeProps> = props => {
+  const { contextValue, updateContext } = useAppContext()
+
   const [children, setChildren] = createSignal([])
   const [expanded, setExpanded] = createSignal(false)
 
   function handleClick() {
     if (!props.path.endsWith('/') && props.path !== '') {
-      props.displaySecret(props.kv, props.path)
+      updateContext({ page: 'view', kv: props.kv, path: props.path })
       return
     }
     if (!expanded()) {
       void (async () => {
-        const response = await invoke('list_path', { mount: props.kv, path: props.path })
+        const response: string[] = await invoke('list_path', {
+          mount: props.kv,
+          path: props.path
+        })
         if (Array.isArray(response)) {
           // sort the array alphabetically first
           response.sort()
@@ -41,9 +47,9 @@ const Node: Component<NodeProps> = props => {
       <div onClick={handleClick}>
         {props.path.endsWith('/') || props.path === '' ? (
           expanded() ? (
-            <span>↓</span>
+            <span>▾</span>
           ) : (
-            <span>→</span>
+            <span>▸</span>
           )
         ) : (
           ''

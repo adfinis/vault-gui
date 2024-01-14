@@ -1,12 +1,25 @@
 import { invoke } from '@tauri-apps/api/tauri'
 import { createSignal, For, type Component } from 'solid-js'
 import vault from './assets/vault-logo.svg'
+import { AppContext } from './context'
+import Login from './Login'
 import Node from './Node'
+import SecretView from './SecretView'
 
 const App: Component = () => {
-  const [url, setUrl] = createSignal('')
+  // Signals
   const [kvs, setKvs] = createSignal([])
   const [secrets, setSecrets] = createSignal({})
+  // State between componenes
+  const [contextValue, setContextValue] = createSignal({
+    page: 'login',
+    kv: '',
+    path: ''
+  })
+  const updateContext = newValues => {
+    setContextValue({ ...contextValue(), ...newValues })
+  }
+  // Callback functions
   const displaySecret = (kv: string, path: string) => {
     void (async () => {
       try {
@@ -21,26 +34,13 @@ const App: Component = () => {
   const showKvs = () => {
     void (async () => {
       try {
-        // Directly await the promise and set the result
-        const data = await invoke('list_kvs')
+        const data: string[] = await invoke('list_kvs')
         console.log(typeof data, data)
         if (Array.isArray(data)) {
           setKvs(
             data.map(kv => ({ kv, path: '', icon: '🔒', displaySecret: displaySecret }))
           )
         }
-      } catch (e) {
-        console.log(e)
-      }
-    })()
-  }
-
-  const oidcAuth = () => {
-    console.log('Called OIDC Auth')
-    void (async () => {
-      try {
-        const res = await invoke('oidc_auth', { address: url(), mount: 'oidc' })
-        console.log(res)
       } catch (e) {
         console.log(e)
       }
@@ -67,49 +67,35 @@ const App: Component = () => {
           </div>
         </div>
       </header>
-      <div class="flex mx-5 my-2">
-          <div class="mt-4">
-            <For each={kvs()}>{nodeData => <Node {...nodeData} />}</For>
+      <div class="flex">
+        <AppContext.Provider value={{ contextValue, updateContext }}>
+          <div class="w-1/3 resize-x overflow-auto bg-slate-200 border-r pl-2">
+            <div class="mt-4">
+              <For each={kvs()}>{nodeData => <Node {...nodeData} />}</For>
+            </div>
           </div>
+          <main class="flex-1">
+            {contextValue().page === 'login' && <Login />}
+            {contextValue().page === 'view' && <SecretView />}
+            {contextValue().page === 'home' && <div class="p-4">Login successful! Select a KV on the left to get started.</div>}
+            <button
+              class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              onClick={showKvs}
+            >
+              Show KVs
+            </button>
+            <div>
+              <For each={Object.entries(secrets())}>
+                {([key, value]) => (
+                  <div>
+                    Key: {key}, Value: {value}
+                  </div>
+                )}
+              </For>
+            </div>
+          </main>
+        </AppContext.Provider>
       </div>
-      <main class="w-full">
-        <div class="p-4">
-          <div class="mb-4">
-            <label for="url" class="block text-sm font-medium text-gray-700">
-              URL
-            </label>
-            <input
-              id="url"
-              type="text"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-              onInput={e => setUrl(e.currentTarget.value)}
-            />
-          </div>
-          <button
-            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            onClick={oidcAuth}
-          >
-            OIDC Auth
-          </button>
-
-          <button
-            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            onClick={showKvs}
-          >
-            Show KVs
-          </button>
-          <div>
-            <For each={Object.entries(secrets())}>
-              {([key, value]) => (
-                <div>
-                  Key: {key}, Value: {value}
-                </div>
-              )}
-            </For>
-          </div>
-
-        </div>
-      </main>
     </>
   )
 }
