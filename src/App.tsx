@@ -9,7 +9,6 @@ import SecretView from './SecretView'
 const App: Component = () => {
   // Signals
   const [kvs, setKvs] = createSignal([])
-  const [secrets, setSecrets] = createSignal({})
   // State between componenes
   const [contextValue, setContextValue] = createSignal({
     page: 'login',
@@ -20,17 +19,6 @@ const App: Component = () => {
     setContextValue({ ...contextValue(), ...newValues })
   }
   // Callback functions
-  const displaySecret = (kv: string, path: string) => {
-    void (async () => {
-      try {
-        const data = await invoke('get_secret', { mount: kv, path: path })
-        console.log(data)
-        setSecrets(data)
-      } catch (e) {
-        console.log(e)
-      }
-    })()
-  }
   const showKvs = () => {
     void (async () => {
       try {
@@ -38,9 +26,7 @@ const App: Component = () => {
         console.log(typeof data, data)
         if (Array.isArray(data)) {
           data.sort()
-          setKvs(
-            data.map(kv => ({ kv, path: '', icon: '🔒', displaySecret: displaySecret }))
-          )
+          setKvs(data.map(kv => ({ kv, path: '', icon: '🔒' })))
         }
       } catch (e) {
         console.log(e)
@@ -89,15 +75,6 @@ const App: Component = () => {
             >
               Show KVs
             </button>
-            <div>
-              <For each={Object.entries(secrets())}>
-                {([key, value]) => (
-                  <div>
-                    Key: {key}, Value: {value}
-                  </div>
-                )}
-              </For>
-            </div>
           </main>
         </AppContext.Provider>
       </div>

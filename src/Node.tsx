@@ -60,11 +60,7 @@ const Node: Component<NodeProps> = props => {
       <div class="pl-4">
         {expanded() && (
           <div>
-            <For each={children()}>
-              {child => (
-                <Node class="ml-10" displaySecret={props.displaySecret} {...child} />
-              )}
-            </For>
+            <For each={children()}>{child => <Node class="ml-10" {...child} />}</For>
           </div>
         )}
       </div>

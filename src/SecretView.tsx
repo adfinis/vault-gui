@@ -46,8 +46,12 @@ const SecretView: Component = () => {
               <tr>
                 <td>{key}</td>
                 <td>
-                  {(key === "description" || key === "username" ) ? value : value.replace(/./g, '*')}
-                  <button class="font-bold pl-4" onClick={() => copyToClipboard(value)}>Copy</button>
+                  {key === 'description' || key === 'username'
+                    ? value
+                    : value.replace(/./g, '*')}
+                  <button class="font-bold pl-4" onClick={() => copyToClipboard(value)}>
+                    Copy
+                  </button>
                 </td>
               </tr>
             )}
