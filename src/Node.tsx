@@ -1,3 +1,4 @@
+import { createLocalStore } from '@solid-primitives/local-store'
 import { invoke } from '@tauri-apps/api/tauri'
 import { createSignal, For, type Component } from 'solid-js'
 import { useAppContext } from './context'

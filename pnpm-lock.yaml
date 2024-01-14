@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@solid-primitives/local-store':
+    specifier: ^1.1.4
+    version: 1.1.4(solid-js@1.8.11)
   '@tauri-apps/api':
     specifier: 1.5.3
     version: 1.5.3
@@ -849,6 +852,14 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@solid-primitives/local-store@1.1.4(solid-js@1.8.11):
+    resolution: {integrity: sha512-sjje0IdTNZ4bKN9c16Rw03QOAbgkk2UVYcqyvyP52xyORvN9VSWXQxUY9nxnxlJR7GCn5VfDZWfXMrqexnix1Q==}
+    peerDependencies:
+      solid-js: ^1.0.7
+    dependencies:
+      solid-js: 1.8.11
+    dev: false
 
   /@tauri-apps/api@1.5.3:
     resolution: {integrity: sha512-zxnDjHHKjOsrIzZm6nO5Xapb/BxqUq1tc7cGkFXsFkGTsSWgCPH1D8mm0XS9weJY2OaR73I3k3S+b7eSzJDfqA==}

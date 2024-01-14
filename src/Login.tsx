@@ -1,3 +1,4 @@
+import createLocalStore from '@solid-primitives/local-store'
 import { invoke } from '@tauri-apps/api/tauri'
 import { createSignal, type Component } from 'solid-js'
 import { useAppContext } from './context'
@@ -7,8 +8,9 @@ const [url, setUrl] = createSignal('')
 const Login: Component = () => {
   const { contextValue, updateContext } = useAppContext()
   const [error, setError] = createSignal('')
+  const [localStorage, setLocalStorage] = createLocalStore()
   const oidcAuth = () => {
-    console.log('Called OIDC Auth')
+    setLocalStorage('oidc_url', url())
     void (async () => {
       try {
         const res: string = await invoke('oidc_auth', { address: url(), mount: 'oidc' })
@@ -18,6 +20,14 @@ const Login: Component = () => {
       }
     })()
   }
+  const oidc_url = () => {
+    try {
+      return localStorage.oidc_url
+    } catch {
+      return ''
+    }
+  }
+
   return (
     <div class="p-4">
       <div class="mb-4">
@@ -28,6 +38,7 @@ const Login: Component = () => {
           id="url"
           type="text"
           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          value={oidc_url()}
           onInput={e => setUrl(e.currentTarget.value)}
         />
       </div>
