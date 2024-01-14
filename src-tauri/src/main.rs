@@ -20,34 +20,41 @@ lazy_static! {
 
 
 #[tauri::command]
-async fn oidc_auth(app_handle: AppHandle, address: String, mount: String) -> String {
+async fn oidc_auth(app_handle: AppHandle, address: String, mount: String) -> Result<String, String> {
     let settings_builder =  VaultClientSettingsBuilder::default()
             .address(&address)
             .build();
     let settings = match settings_builder {
-        Ok(settings) => {
-            settings
-        }
-        Err(e) => {
-                return format!("Error creating settings: {}", e);
-        }
+        Ok(settings) => settings,
+        Err(e) => return Err(format!("Error creating settings: {}", e)),
     };
 
-    let mut client = VaultClient::new(settings).unwrap();
+    let mut client = match VaultClient::new(settings) {
+        Ok(client) => client,
+        Err(e) => return Err(format!("Error creating VaultClient: {}", e)),
+    };
 
     let login = OIDCLogin {port: None, role: None};
 
 
-    let callback = client.login_multi(&mount, login).await.unwrap();
+    let callback = client.login_multi(&mount, login).await;
+    let callback = match callback {
+        Ok(callback) => callback,
+        Err(e) => return Err(format!("Error logging in: {}", e)),
+    };
     let callback_url = callback.url.clone();
     shell::open(&app_handle.shell_scope(), &callback_url, None).unwrap();
     println!("{}", callback_url);
-    let _ = client.login_multi_callback(&mount, callback).await.unwrap();
+    let callback_res = client.login_multi_callback(&mount, callback).await;
+    match callback_res {
+        Ok(_) => {}
+        Err(e) => return Err(format!("Error logging in: {}", e)),
+    };
 
     let mut global_client = GLOBAL_VAULT_CLIENT.lock().await;
     *global_client = Some(client);
 
-    return "OK".to_string();
+    Ok("OK".to_string())
 
 }
 
