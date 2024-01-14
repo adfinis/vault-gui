@@ -6,69 +6,94 @@
 use std::collections::HashMap;
 use vaultrs::client::{VaultClient, VaultClientSettingsBuilder};
 use vaultrs::{kv2, sys};
+use tauri::api::shell;
+use tauri::{AppHandle, Manager};
+use tokio::sync::Mutex;
+use std::sync::Arc;
+use lazy_static::lazy_static;
+use vaultrs_login::LoginClient;
+use vaultrs_login::engines::oidc::OIDCLogin;
 
-fn vault_login(address: String, token: String) -> VaultClient {
-    let settings = VaultClientSettingsBuilder::default()
-        .address(&address)
-        .token(&token)
-        .build();
-    let client = match settings {
-        Ok(settings) => settings,
+lazy_static! {
+    static ref GLOBAL_VAULT_CLIENT: Arc<Mutex<Option<VaultClient>>> = Arc::new(Mutex::new(None));
+}
+
+
+#[tauri::command]
+async fn oidc_auth(app_handle: AppHandle, address: String, mount: String) -> String {
+    let settings_builder =  VaultClientSettingsBuilder::default()
+            .address(&address)
+            .build();
+    let settings = match settings_builder {
+        Ok(settings) => {
+            settings
+        }
         Err(e) => {
-            panic!("Error creating settings: {}", e);
+                return format!("Error creating settings: {}", e);
         }
     };
 
-    let client = VaultClient::new(client);
-    match client {
-        Ok(client) => {
-            return client;
-        }
-        Err(e) => {
-            panic!("Error creating client: {}", e);
-        }
-    }
+    let mut client = VaultClient::new(settings).unwrap();
+
+    let login = OIDCLogin {port: None, role: None};
+
+
+    let callback = client.login_multi(&mount, login).await.unwrap();
+    let callback_url = callback.url.clone();
+    shell::open(&app_handle.shell_scope(), &callback_url, None).unwrap();
+    println!("{}", callback_url);
+    let _ = client.login_multi_callback(&mount, callback).await.unwrap();
+
+    let mut global_client = GLOBAL_VAULT_CLIENT.lock().await;
+    *global_client = Some(client);
+
+    return "OK".to_string();
+
 }
 
 #[tauri::command]
-async fn list_kvs(address: String, token: String) -> Vec<String> {
-    let client = vault_login(address, token);
-    let result = sys::mount::list(&client).await;
+async fn list_kvs() -> Result<Vec<String>, String> {
+    let guard = GLOBAL_VAULT_CLIENT.lock().await;
+    let client = guard.as_ref().ok_or_else(|| "VaultClient is not initialized".to_string())?;
+
+    let result = sys::mount::list(client).await;
     match result {
         Ok(list) => {
             // Only return the string parts of the HashMap
-            return list.keys().cloned().collect();
+            Ok(list.keys().cloned().collect())
         }
         Err(e) => {
-            panic!("Error listing keys: {}", e);
+            Err(format!("Error listing keys: {}", e))
         }
     }
 }
 
 #[tauri::command]
-async fn list_path(address: String, token: String, mount: String, path: String) -> Vec<String> {
-    let client = vault_login(address, token);
-    let result = kv2::list(&client, &mount, &path).await;
+async fn list_path(mount: String, path: String) -> Result<Vec<String>, String> {
+    let guard = GLOBAL_VAULT_CLIENT.lock().await;
+    let client = guard.as_ref().ok_or_else(|| "VaultClient is not initialized".to_string())?;
+    let result = kv2::list(client, &mount, &path).await;
     match result {
         Ok(list) => {
-            return list;
+            Ok(list)
         }
         Err(e) => {
-            panic!("Error listing keys: {}", e);
+            Err(format!("Error listing keys: {}", e))
         }
     }
 }
 
 #[tauri::command]
-async fn get_secret(address: String, token: String, mount: String, path: String) -> HashMap<String, String> {
-    let client = vault_login(address, token);
-    let result = kv2::read(&client, &mount, &path).await;
+async fn get_secret(mount: String, path: String) -> Result<HashMap<String, String>, String> {
+    let guard = GLOBAL_VAULT_CLIENT.lock().await;
+    let client = guard.as_ref().ok_or_else(|| "VaultClient is not initialized".to_string())?;
+    let result = kv2::read(client, &mount, &path).await;
     match result {
         Ok(secret) => {
-            return secret;
+            Ok(secret)
         }
         Err(e) => {
-            panic!("Error reading secret: {}", e);
+            Err(format!("Error reading secret: {}", e))
         }
     }
 }
@@ -76,6 +101,7 @@ async fn get_secret(address: String, token: String, mount: String, path: String)
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
+            oidc_auth,
             list_kvs,
             list_path,
             get_secret
