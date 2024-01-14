@@ -1,16 +1,34 @@
 import { invoke } from '@tauri-apps/api/tauri'
-import { createSignal, type Component } from 'solid-js'
+import { createSignal, For, type Component } from 'solid-js'
 import vault from './assets/vault-logo.svg'
+import Node from './Node'
 
 const App: Component = () => {
   const [url, setUrl] = createSignal('')
-  const [kvs, setKvs] = createSignal({})
+  const [kvs, setKvs] = createSignal([])
+  const [secrets, setSecrets] = createSignal({})
+  const displaySecret = (kv: string, path: string) => {
+    void (async () => {
+      try {
+        const data = await invoke('get_secret', { mount: kv, path: path })
+        console.log(data)
+        setSecrets(data)
+      } catch (e) {
+        console.log(e)
+      }
+    })()
+  }
   const showKvs = () => {
-    ;(async () => {
+    void (async () => {
       try {
         // Directly await the promise and set the result
         const data = await invoke('list_kvs')
-        setKvs(data)
+        console.log(typeof data, data)
+        if (Array.isArray(data)) {
+          setKvs(
+            data.map(kv => ({ kv, path: '', icon: '🔒', displaySecret: displaySecret }))
+          )
+        }
       } catch (e) {
         console.log(e)
       }
@@ -19,7 +37,7 @@ const App: Component = () => {
 
   const oidcAuth = () => {
     console.log('Called OIDC Auth')
-    ;(async () => {
+    void (async () => {
       try {
         const res = await invoke('oidc_auth', { address: url(), mount: 'oidc' })
         console.log(res)
@@ -77,8 +95,24 @@ const App: Component = () => {
             Show KVs
           </button>
 
+          <button
+            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            onClick={showKvs}
+          >
+            Show KVs
+          </button>
+          <div>
+            <For each={Object.entries(secrets())}>
+              {([key, value]) => (
+                <div>
+                  Key: {key}, Value: {value}
+                </div>
+              )}
+            </For>
+          </div>
+
           <div class="mt-4">
-            <pre>{JSON.stringify(kvs(), null, 2)}</pre>
+            <For each={kvs()}>{nodeData => <Node {...nodeData} />}</For>
           </div>
         </div>
       </main>
