@@ -56,7 +56,9 @@ const Node: Component<NodeProps> = props => {
   return (
     <div>
       <div onClick={handleClick}>
-        <Icon onClick={listPath} path={chevron()} class="h-[1em] inline" />
+        <Show when={props.path.endsWith('/') || props.path === ''}>
+          <Icon onClick={listPath} path={chevron()} class="h-[1em] inline" />
+        </Show>
         <Item {...props} />
       </div>
       <div class="pl-4">
