@@ -5,6 +5,7 @@ import { AppContext } from './context'
 import Login from './Login'
 import Node from './Node'
 import SecretView from './SecretView'
+import SecretList from './SecretList'
 
 const App: Component = () => {
   // Signals
@@ -64,6 +65,7 @@ const App: Component = () => {
           <main class="flex-1">
             {contextValue().page === 'login' && <Login />}
             {contextValue().page === 'view' && <SecretView />}
+            {contextValue().page === 'list' && <SecretList />}
             {contextValue().page === 'home' && (
               <div class="p-4">
                 Login successful! Select a KV on the left to get started.

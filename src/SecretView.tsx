@@ -33,25 +33,40 @@ const SecretView: Component = () => {
         {contextValue().kv}
         {contextValue().path}
       </p>
-      <table class="table-fixed border-2">
-        <thead>
+      <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
-            <th class="text-left">Key</th>
-            <th class="text-left">Value</th>
+            <th scope="col" class="px-6 py-3">
+              Key
+            </th>
+            <th scope="col" class="px-6 py-3">
+              Value
+            </th>
+            <th scope="col" class="px-6 py-3"></th>
           </tr>
         </thead>
         <tbody>
           <For each={Object.entries(secrets())}>
             {([key, value]) => (
-              <tr>
-                <td>{key}</td>
-                <td>
+              <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th
+                  scope="row"
+                  class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                >
+                  {key}
+                </th>
+                <td class="px-6 py-4">
                   {key === 'description' || key === 'username'
                     ? value
                     : value.replace(/./g, '*')}
-                  <button class="font-bold pl-4" onClick={() => copyToClipboard(value)}>
+                </td>
+                <td class="px-6 py-4 text-right">
+                  <a
+                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer"
+                    onClick={() => copyToClipboard(value)}
+                  >
                     Copy
-                  </button>
+                  </a>
                 </td>
               </tr>
             )}

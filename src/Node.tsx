@@ -21,6 +21,9 @@ const Node: Component<NodeProps> = props => {
       updateContext({ page: 'view', kv: props.kv, path: props.path })
       return
     }
+    updateContext({ page: 'list', kv: props.kv, path: props.path })
+  }
+  function handleToggleClick() {
     if (!expanded()) {
       void (async () => {
         const response: string[] = await invoke('list_path', {
@@ -46,6 +49,7 @@ const Node: Component<NodeProps> = props => {
   return (
     <div>
       <div onClick={handleClick}>
+        <span onClick={handleToggleClick}>
         {props.path.endsWith('/') || props.path === '' ? (
           expanded() ? (
             <span>▾</span>
@@ -55,6 +59,7 @@ const Node: Component<NodeProps> = props => {
         ) : (
           ''
         )}
+        </span>
         {props.icon}
         {props.path === '' ? props.kv : props.path.replace(/\/+$/, '').split('/').pop()}
       </div>
