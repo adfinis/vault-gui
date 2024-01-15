@@ -8,6 +8,7 @@ import {
 } from 'solid-heroicons/outline'
 import { createSignal, For, JSXElement, Show, type Component } from 'solid-js'
 import { useAppContext } from './context'
+import Item from './Item'
 
 type NodeProps = {
   icon: { path: JSXElement; outline: boolean; mini: boolean }
@@ -56,13 +57,7 @@ const Node: Component<NodeProps> = props => {
     <div>
       <div onClick={handleClick}>
         <Icon onClick={listPath} path={chevron()} class="h-[1em] inline" />
-        <Icon path={props.icon} class="h-[1em] inline" />
-        <Show
-          when={props.path === ''}
-          fallback={props.path.replace(/\/+$/, '').split('/').pop()}
-        >
-          {props.kv}
-        </Show>
+        <Item {...props} />
       </div>
       <div class="pl-4">
         <Show when={expanded()}>
