@@ -25,7 +25,7 @@ const SecretView: Component = () => {
             <th scope="col" class="px-6 py-3">
               Value
             </th>
-            <th scope="col" class="px-6 py-3"></th>
+            <th scope="col" class="px-6 py-3" />
           </tr>
         </thead>
         <tbody>
