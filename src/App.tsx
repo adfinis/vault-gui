@@ -41,8 +41,8 @@ const App: Component = () => {
     path: ''
   })
 
-  createEffect(async () => {
-    if (contextValue().page === 'home') await refetch()
+  createEffect(() => {
+    if (contextValue().page === 'home') refetch()
   })
 
   const updateContext = (newValues: {
