@@ -2,15 +2,31 @@ import { createSignal, For, Show, type Component } from 'solid-js'
 import { useAppContext } from './context'
 import SearchResult from './SearchResult'
 
+type SearchIndexType = {
+  [key: string]: string[]
+}
+
+interface SearchResult {
+  kv: string
+  path: string
+}
+
 const Search: Component = () => {
   const [search, setSearch] = createSignal('')
-  const [searchResults, setSearchResults] = createSignal([])
+  const [searchResults, setSearchResults] = createSignal<SearchResult[]>([])
   const searchIndexRaw = localStorage.getItem('searchIndex')
-  const searchIndex = searchIndexRaw ? JSON.parse(searchIndexRaw) : {}
+  const searchIndex = (): SearchIndexType => {
+    try {
+      return JSON.parse(searchIndexRaw ?? {}) as SearchIndexType
+    } catch (e) {
+      console.log(e)
+      return {}
+    }
+  }
   const runSearch = () => {
     console.log(`searching for ${search()}`)
-    const results = []
-    for (const [kv, paths] of Object.entries(searchIndex)) {
+    const results: SearchResult[] = []
+    for (const [kv, paths] of Object.entries(searchIndex())) {
       for (const path of paths) {
         if (path.includes(search())) {
           console.log(kv, path)
@@ -22,7 +38,7 @@ const Search: Component = () => {
     console.log(searchResults())
   }
 
-  const { contextValue, updateContext } = useAppContext()
+  const { updateContext } = useAppContext()
   const gotoSearchIndex = () => {
     updateContext({ page: 'searchIndex' })
   }

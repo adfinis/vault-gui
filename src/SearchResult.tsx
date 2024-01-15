@@ -7,7 +7,7 @@ type SearchResultProps = {
 }
 
 const SearchResult: Component<SearchResultProps> = props => {
-  const { contextValue, updateContext } = useAppContext()
+  const { updateContext } = useAppContext()
 
   const handleClick = () => {
     let page: string = 'list'
