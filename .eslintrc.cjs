@@ -1,36 +1,37 @@
-/* eslint-env node */
-// Docs: https://eslint.org/docs/user-guide/configuring
 module.exports = {
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended-requiring-type-checking',
-    'plugin:prettier/recommended',
-    'prettier'
-  ],
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    ecmaVersion: 2022,
-    sourceType: 'module',
-    tsconfigRootDir: __dirname,
-    project: ['./tsconfig.json']
-  },
   env: {
     browser: true,
-    es2022: true
+    es2021: true
   },
-  plugins: ['@typescript-eslint', 'prettier'],
-  rules: {
-    'prettier/prettier': 'error',
-    '@typescript-eslint/indent': ['error', 2],
-    '@typescript-eslint/no-unused-vars': 'error',
-    '@typescript-eslint/no-explicit-any': 'error',
-    '@typescript-eslint/no-misused-promises': [
-      'error',
-      {
-        checksVoidReturn: false
+  parser: '@typescript-eslint/parser',
+  plugins: ['solid', 'prettier', '@typescript-eslint'],
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:solid/typescript',
+    'plugin:prettier/recommended'
+  ],
+  overrides: [
+    {
+      files: ['./src/**/*.tsx', './src/**/*.ts'],
+      env: {
+        browser: true,
+        es2022: true
       }
-    ]
+    },
+    {
+      env: {
+        node: true
+      },
+      files: ['.*rc.cjs', '*.config*.js'],
+      parserOptions: {
+        sourceType: 'script'
+      }
+    }
+  ],
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module'
   },
-  ignorePatterns: ['node_modules'],
-  root: true
+  rules: {}
 }
