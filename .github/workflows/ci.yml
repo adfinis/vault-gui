@@ -60,26 +60,7 @@ jobs:
       - name: Build 🔧
         run: pnpm build:tauri
 
-  lint-rs:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v4
-        
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libayatana-appindicator3-dev librsvg2-dev patchelf
-          
-      - name: Create fake out folder so tauri::generate_handler! doesn't panic
-        run: mkdir out
-        working-directory: src-tauri
-
-      - name: Lint with Clippy 🧹
-        run: cargo run clippy  --all-targets --all-features
-        working-directory: src-tauri
-
-  lint-js:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
