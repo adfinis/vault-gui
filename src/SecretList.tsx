@@ -24,7 +24,7 @@ const ListView: Component = () => {
             <div>
               <Item
                 kv={contextValue().kv}
-                path={contextValue().path + item}
+                path={contextValue().path + '/' + item}
                 icon={item.endsWith('/') ? folder : documentIcon}
               />
             </div>

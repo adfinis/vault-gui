@@ -42,6 +42,7 @@ const Node: Component<NodeProps> = props => {
       mount: props.kv,
       path: props.path
     })
+
     if (!(response instanceof Array)) return
     response.sort()
     setChildren(
