@@ -12,7 +12,7 @@ module.exports = {
     ecmaVersion: 2022,
     sourceType: 'module',
     tsconfigRootDir: __dirname,
-    project: ['./tsconfig.json'],
+    project: ['./tsconfig.json']
   },
   env: {
     browser: true,
@@ -20,10 +20,16 @@ module.exports = {
   },
   plugins: ['@typescript-eslint', 'prettier'],
   rules: {
-    "prettier/prettier": "error",
-    "@typescript-eslint/indent": ["error", 2],
-    "@typescript-eslint/no-unused-vars": "error",
-    "@typescript-eslint/no-explicit-any": "error"
+    'prettier/prettier': 'error',
+    '@typescript-eslint/indent': ['error', 2],
+    '@typescript-eslint/no-unused-vars': 'error',
+    '@typescript-eslint/no-explicit-any': 'error',
+    '@typescript-eslint/no-misused-promises': [
+      'error',
+      {
+        checksVoidReturn: false
+      }
+    ]
   },
   ignorePatterns: ['node_modules'],
   root: true

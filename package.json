@@ -33,8 +33,10 @@
     "vite-plugin-tauri": "3.3.0"
   },
   "dependencies": {
+    "@solid-primitives/local-store": "^1.1.4",
     "@tauri-apps/api": "1.5.3",
     "@tauri-apps/cli": "1.5.9",
+    "solid-heroicons": "^3.2.4",
     "solid-js": "1.8.11"
   }
 }

@@ -1,7 +1,59 @@
-import type { Component } from 'solid-js'
+import { invoke } from '@tauri-apps/api/tauri'
+import { lockClosed } from 'solid-heroicons/outline'
+import {
+  createEffect,
+  createResource,
+  createSignal,
+  For,
+  Show,
+  type Component
+} from 'solid-js'
+import { Dynamic } from 'solid-js/web'
 import vault from './assets/vault-logo.svg'
+import { AppContext } from './context'
+import Login from './Login'
+import Node from './Node'
+import SecretList from './SecretList'
+import SecretView from './SecretView'
+
+const listKVS = async (): Promise<null | string[]> => {
+  try {
+    return await invoke('list_kvs')
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+const Home = () => <strong>Select a KV to get started</strong>
+
+const pageMap: { [key: string]: Component } = {
+  home: Home,
+  login: Login,
+  view: SecretView,
+  list: SecretList
+}
 
 const App: Component = () => {
+  const [kvs, { refetch }] = createResource(listKVS)
+  const [contextValue, setContextValue] = createSignal({
+    page: 'login',
+    kv: '',
+    path: ''
+  })
+
+  createEffect(async () => {
+    if (contextValue().page === 'home') await refetch()
+  })
+
+  const updateContext = (newValues: {
+    page?: string
+    kv?: string
+    path?: string
+  }): void => {
+    console.log({ ...contextValue(), ...newValues })
+    setContextValue({ ...contextValue(), ...newValues })
+  }
+
   return (
     <>
       <header class="supports-backdrop-blur:bg-background/60 bg-background/95 bg-black sticky top-0 z-40 w-full border-b backdrop-blur">
@@ -22,9 +74,31 @@ const App: Component = () => {
           </div>
         </div>
       </header>
-      <div class="flex mx-5 my-2">
-        <nav class="w-1/4">Tree here</nav>
-        <main class="w-full">Ui here</main>
+      <div class="flex">
+        <AppContext.Provider value={{ contextValue, updateContext }}>
+          <div
+            class="w-1/3 resize-x overflow-auto bg-neutral-100 border-r pl-2"
+            classList={{ hidden: contextValue().page === 'login' }}
+          >
+            <div class="mt-4">
+              <Show
+                when={contextValue().page !== 'login' && kvs()}
+                fallback={<strong>loading...</strong>}
+              >
+                <For each={kvs().sort()}>
+                  {kv => <Node kv={kv} path="" icon={lockClosed} />}
+                </For>
+              </Show>
+            </div>
+          </div>
+          <main class="flex-1 p-5">
+            <h1 class="font-bold text-xl">
+              {contextValue().kv}
+              {contextValue().path}
+            </h1>
+            <Dynamic component={pageMap[contextValue().page]} />
+          </main>
+        </AppContext.Provider>
       </div>
     </>
   )
