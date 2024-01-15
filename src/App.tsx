@@ -10,6 +10,7 @@ import {
 } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import vault from './assets/vault-logo.svg'
+import Breadcrumbs from './Breadcrumbs'
 import { AppContext } from './context'
 import Login from './Login'
 import Node from './Node'
@@ -93,8 +94,7 @@ const App: Component = () => {
           </div>
           <main class="flex-1 p-5">
             <h1 class="font-bold text-xl">
-              {contextValue().kv}
-              {contextValue().path}
+              <Breadcrumbs kv={contextValue().kv} path={contextValue().path} />
             </h1>
             <Dynamic component={pageMap[contextValue().page]} />
           </main>
