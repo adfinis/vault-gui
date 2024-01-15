@@ -9,8 +9,10 @@
     "dev:tauri": "vite --config vite.config.tauri.js",
     "build:tauri": "vite build --config vite.config.tauri.js",
     "preview": "vite preview",
-    "eslint": "eslint src",
-    "eslint:fix": "eslint src --fix"
+    "lint": "concurrently \"pnpm:lint:*(!fix)\" --names \"lint:\"",
+    "lint:fix": "concurrently \"pnpm:lint:*:fix\" --names \"fix:\"",
+    "lint:js": "eslint src",
+    "lint:js:fix": "eslint src --fix"
   },
   "license": "MIT",
   "devDependencies": {
@@ -19,6 +21,7 @@
     "@typescript-eslint/eslint-plugin": "6.18.1",
     "@typescript-eslint/parser": "6.18.1",
     "autoprefixer": "10.4.16",
+    "concurrently": "^8.2.2",
     "eslint": "8.56.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-prettier": "5.1.3",
