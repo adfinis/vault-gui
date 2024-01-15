@@ -1,32 +1,22 @@
-import createLocalStore from '@solid-primitives/local-store'
 import { invoke } from '@tauri-apps/api/tauri'
-import { createSignal, type Component } from 'solid-js'
+import { createSignal, Show, type Component } from 'solid-js'
 import { useAppContext } from './context'
 
-const [url, setUrl] = createSignal('')
-
 const Login: Component = () => {
-  const { contextValue, updateContext } = useAppContext()
+  const { updateContext } = useAppContext()
   const [error, setError] = createSignal('')
-  const [localStorage, setLocalStorage] = createLocalStore()
-  const oidcAuth = () => {
-    setLocalStorage('oidc_url', url())
-    void (async () => {
-      try {
-        const res: string = await invoke('oidc_auth', { address: url(), mount: 'oidc' })
-        updateContext({ page: 'home' })
-      } catch (e) {
-        console.log(e)
-      }
-    })()
-  }
-  const oidc_url = () => {
+
+  const oidcAuth = async () => {
     try {
-      return localStorage.oidc_url
-    } catch {
-      return ''
+      await invoke('oidc_auth', { address: oidcURL(), mount: 'oidc' })
+      updateContext({ page: 'home' })
+    } catch (e) {
+      setError(e)
     }
   }
+
+  const oidcURL = () => localStorage.getItem('oidc_url') ?? ''
+  const setOidcURL = (v: string) => localStorage.setItem('oidc_url', v)
 
   return (
     <div class="p-4">
@@ -38,8 +28,8 @@ const Login: Component = () => {
           id="url"
           type="text"
           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-          value={oidc_url()}
-          onInput={e => setUrl(e.currentTarget.value)}
+          value={oidcURL()}
+          onInput={e => setOidcURL(e.currentTarget.value)}
         />
       </div>
       <button
@@ -48,11 +38,11 @@ const Login: Component = () => {
       >
         OIDC Auth
       </button>
-      {error() && (
+      <Show when={error()}>
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
           {error()}
         </div>
-      )}
+      </Show>
     </div>
   )
 }

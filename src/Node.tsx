@@ -1,74 +1,75 @@
-import { createLocalStore } from '@solid-primitives/local-store'
 import { invoke } from '@tauri-apps/api/tauri'
-import { createSignal, For, type Component } from 'solid-js'
+import { Icon } from 'solid-heroicons'
+import {
+  chevronDown,
+  chevronRight,
+  document as documentIcon,
+  folder
+} from 'solid-heroicons/outline'
+import { createSignal, For, JSXElement, Show, type Component } from 'solid-js'
 import { useAppContext } from './context'
 
 type NodeProps = {
-  icon: string
+  icon: { path: JSXElement; outline: boolean; mini: boolean }
   kv: string
   path: string
-  displaySecret: (path: string, kv: string) => void
+  displaySecret?: (path: string, kv: string) => void
 }
 
 const Node: Component<NodeProps> = props => {
-  const { contextValue, updateContext } = useAppContext()
+  const { updateContext } = useAppContext()
 
   const [children, setChildren] = createSignal([])
   const [expanded, setExpanded] = createSignal(false)
 
-  function handleClick() {
+  const chevron = () =>
+    props.path.endsWith('/') || props.path === '' ? chevronDown : chevronRight
+
+  const handleClick = () => {
+    let page: string = 'list'
     if (!props.path.endsWith('/') && props.path !== '') {
-      updateContext({ page: 'view', kv: props.kv, path: props.path })
-      return
+      page = 'view'
     }
-    updateContext({ page: 'list', kv: props.kv, path: props.path })
+    updateContext({ page, kv: props.kv, path: props.path })
   }
-  function handleToggleClick() {
-    if (!expanded()) {
-      void (async () => {
-        const response: string[] = await invoke('list_path', {
-          mount: props.kv,
-          path: props.path
-        })
-        if (Array.isArray(response)) {
-          // sort the array alphabetically first
-          response.sort()
-          setChildren(
-            response.map(subpath => ({
-              kv: props.kv,
-              path: props.path + subpath,
-              icon: subpath.endsWith('/') ? '📁' : '📄'
-            }))
-          )
-        }
-      })()
-    }
-    setExpanded(!expanded())
+
+  const listPath = async () => {
+    setExpanded(v => !v)
+    if (expanded()) return
+
+    const response: string[] = await invoke('list_path', {
+      mount: props.kv,
+      path: props.path
+    })
+    if (!(response instanceof Array)) return
+    response.sort()
+    setChildren(
+      response.map(subpath => ({
+        kv: props.kv,
+        path: props.path + subpath,
+        icon: subpath.endsWith('/') ? folder : documentIcon
+      }))
+    )
   }
 
   return (
     <div>
       <div onClick={handleClick}>
-        <span onClick={handleToggleClick}>
-        {props.path.endsWith('/') || props.path === '' ? (
-          expanded() ? (
-            <span>▾</span>
-          ) : (
-            <span>▸</span>
-          )
-        ) : (
-          ''
-        )}
-        </span>
-        {props.icon}
-        {props.path === '' ? props.kv : props.path.replace(/\/+$/, '').split('/').pop()}
+        <Icon onClick={listPath} path={chevron()} class="h-[1em] inline" />
+        <Icon path={props.icon} class="h-[1em] inline" />
+        <Show
+          when={props.path === ''}
+          fallback={props.path.replace(/\/+$/, '').split('/').pop()}
+        >
+          {props.kv}
+        </Show>
       </div>
       <div class="pl-4">
-        {expanded() && (
+        <Show when={expanded()}>
           <div>
             <For each={children()}>{child => <Node class="ml-10" {...child} />}</For>
           </div>
-        )}
+        </Show>
       </div>
     </div>
   )

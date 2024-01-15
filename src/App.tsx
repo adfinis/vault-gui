@@ -1,38 +1,56 @@
 import { invoke } from '@tauri-apps/api/tauri'
-import { createSignal, For, type Component } from 'solid-js'
+import { lockClosed } from 'solid-heroicons/outline'
+import {
+  createEffect,
+  createResource,
+  createSignal,
+  For,
+  Show,
+  type Component
+} from 'solid-js'
+import { Dynamic } from 'solid-js/web'
 import vault from './assets/vault-logo.svg'
 import { AppContext } from './context'
 import Login from './Login'
 import Node from './Node'
-import SecretView from './SecretView'
 import SecretList from './SecretList'
+import SecretView from './SecretView'
+
+const listKVS = async (): Promise<null | string[]> => {
+  try {
+    return await invoke('list_kvs')
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+const Home = () => <strong>Select a KV to get started</strong>
+
+const pageMap: { [key: string]: Component } = {
+  home: Home,
+  login: Login,
+  view: SecretView,
+  list: SecretList
+}
 
 const App: Component = () => {
-  // Signals
-  const [kvs, setKvs] = createSignal([])
-  // State between componenes
+  const [kvs, { refetch }] = createResource(listKVS)
   const [contextValue, setContextValue] = createSignal({
     page: 'login',
     kv: '',
     path: ''
   })
-  const updateContext = newValues => {
+
+  createEffect(async () => {
+    if (contextValue().page === 'home') await refetch()
+  })
+
+  const updateContext = (newValues: {
+    page?: string
+    kv?: string
+    path?: string
+  }): void => {
     setContextValue({ ...contextValue(), ...newValues })
-  }
-  // Callback functions
-  const showKvs = () => {
-    void (async () => {
-      try {
-        const data: string[] = await invoke('list_kvs')
-        console.log(typeof data, data)
-        if (Array.isArray(data)) {
-          data.sort()
-          setKvs(data.map(kv => ({ kv, path: '', icon: '🔒' })))
-        }
-      } catch (e) {
-        console.log(e)
-      }
-    })()
   }
 
   return (
@@ -59,24 +77,18 @@ const App: Component = () => {
         <AppContext.Provider value={{ contextValue, updateContext }}>
           <div class="w-1/3 resize-x overflow-auto bg-slate-200 border-r pl-2">
             <div class="mt-4">
-              <For each={kvs()}>{nodeData => <Node {...nodeData} />}</For>
+              <Show
+                when={contextValue().page !== 'login' && kvs()}
+                fallback={<strong>loading...</strong>}
+              >
+                <For each={kvs().sort()}>
+                  {kv => <Node kv={kv} path="" icon={lockClosed} />}
+                </For>
+              </Show>
             </div>
           </div>
           <main class="flex-1">
-            {contextValue().page === 'login' && <Login />}
-            {contextValue().page === 'view' && <SecretView />}
-            {contextValue().page === 'list' && <SecretList />}
-            {contextValue().page === 'home' && (
-              <div class="p-4">
-                Login successful! Select a KV on the left to get started.
-              </div>
-            )}
-            <button
-              class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              onClick={showKvs}
-            >
-              Show KVs
-            </button>
+            <Dynamic component={pageMap[contextValue().page]} />
           </main>
         </AppContext.Provider>
       </div>
