@@ -13,9 +13,15 @@ const Breadcrumbs = (props: { page: string; kv: string; path: string }) => {
     updateContext({ page: 'list', kv: props.kv, path: newPath })
   }
 
+  const handleKvClick = () => {
+    updateContext({ page: 'list', kv: props.kv, path: '' })
+  }
+
   return (
     <div>
-      <span>{props.kv}</span>
+      <a href="#" onClick={handleKvClick}>
+        {props.kv}
+      </a>
       {props.path.split('/').map((segment, index, array) => (
         <span>
           {index < array.length - 1 ? (
