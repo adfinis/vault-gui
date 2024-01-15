@@ -31,7 +31,13 @@ const Item: Component<ItemProps> = props => {
           when={props.path === ''}
           fallback={props.path.replace(/\/+$/, '').split('/').pop()}
         >
-          {props.kv}
+          <span
+            classList={{
+              'font-bold': contextValue().path === '' && contextValue().kv === props.kv
+            }}
+          >
+            {props.kv}
+          </span>
         </Show>
       </span>
     </span>
