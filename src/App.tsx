@@ -50,6 +50,7 @@ const App: Component = () => {
     kv?: string
     path?: string
   }): void => {
+    console.log({ ...contextValue(), ...newValues })
     setContextValue({ ...contextValue(), ...newValues })
   }
 
@@ -75,7 +76,10 @@ const App: Component = () => {
       </header>
       <div class="flex">
         <AppContext.Provider value={{ contextValue, updateContext }}>
-          <div class="w-1/3 resize-x overflow-auto bg-slate-200 border-r pl-2">
+          <div
+            class="w-1/3 resize-x overflow-auto bg-neutral-100 border-r pl-2"
+            classList={{ hidden: contextValue().page === 'login' }}
+          >
             <div class="mt-4">
               <Show
                 when={contextValue().page !== 'login' && kvs()}
@@ -87,7 +91,11 @@ const App: Component = () => {
               </Show>
             </div>
           </div>
-          <main class="flex-1">
+          <main class="flex-1 p-5">
+            <h1 class="font-bold text-xl">
+              {contextValue().kv}
+              {contextValue().path}
+            </h1>
             <Dynamic component={pageMap[contextValue().page]} />
           </main>
         </AppContext.Provider>

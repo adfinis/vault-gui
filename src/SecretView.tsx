@@ -15,11 +15,7 @@ const SecretView: Component = () => {
   const [secrets] = createResource(contextValue, fetchSecret)
 
   return (
-    <div class="p-5">
-      <p class="font-bold">
-        {contextValue().kv}
-        {contextValue().path}
-      </p>
+    <div>
       <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
@@ -33,7 +29,7 @@ const SecretView: Component = () => {
           </tr>
         </thead>
         <tbody>
-          <Show when={secrets()} fallback={<strong>loading..</strong>}>
+          <Show when={secrets()} fallback={<strong>Loading...</strong>}>
             <For each={Object.entries(secrets())}>
               {([key, value]) => (
                 <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
