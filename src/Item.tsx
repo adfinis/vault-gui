@@ -1,6 +1,7 @@
 import { Icon } from 'solid-heroicons';
 import { JSXElement, Show, type Component } from 'solid-js';
-import { useAppContext } from './context';
+import { setState, state } from './state';
+import { splitPath } from './utils';
 
 type ItemProps = {
     icon: { path: JSXElement; outline: boolean; mini: boolean };
@@ -9,34 +10,29 @@ type ItemProps = {
 };
 
 const Item: Component<ItemProps> = (props) => {
-    const { contextValue, updateContext } = useAppContext();
-
-    const handleClick = () => {
-        let page: string = 'list';
-        if (!props.path.endsWith('/') && props.path !== '') {
-            page = 'view';
-        }
-        updateContext({ page, kv: props.kv, path: props.path });
-    };
-
     return (
-        <span onClick={handleClick} class="cursor-pointer">
+        <span
+            onClick={() =>
+                setState({
+                    page: props.path.endsWith('/') || !props.path ? 'list' : 'view',
+                    path: props.path,
+                })
+            }
+            class="cursor-pointer"
+        >
             <Icon path={props.icon} class="inline h-[1em]" />
             <span
                 classList={{
-                    'font-bold':
-                        contextValue().path === props.path && props.path !== '',
+                    'font-bold': state.path === props.path && !!props.path,
                 }}
             >
                 <Show
                     when={props.path === ''}
-                    fallback={props.path.replace(/\/+$/, '').split('/').pop()}
+                    fallback={splitPath(props.path).at(-1).replace('/', '')}
                 >
                     <span
                         classList={{
-                            'font-bold':
-                                contextValue().path === '' &&
-                                contextValue().kv === props.kv,
+                            'font-bold': state.path === '' && state.kv === props.kv,
                         }}
                     >
                         {props.kv}

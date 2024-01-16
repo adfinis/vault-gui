@@ -1,6 +1,6 @@
 import { createSignal, For, Show, type Component } from 'solid-js';
-import { useAppContext } from './context';
 import SearchResult from './SearchResult';
+import { setState } from './state';
 
 type SearchIndexType = {
     [key: string]: string[];
@@ -34,10 +34,6 @@ const Search: Component = () => {
         setSearchResults(results);
     };
 
-    const { updateContext } = useAppContext();
-    const gotoSearchIndex = () => {
-        updateContext({ page: 'searchIndex' });
-    };
     return (
         <div class="p-4">
             <div class="search">
@@ -60,7 +56,7 @@ const Search: Component = () => {
                 <For each={searchResults()}>
                     {(item) => (
                         <>
-                            <SearchResult kv={item.kv} path={item.path} icon="" />
+                            <SearchResult kv={item.kv} path={item.path} />
                             <hr />
                         </>
                     )}
@@ -70,7 +66,7 @@ const Search: Component = () => {
                         No results? Try creating a{' '}
                         <a
                             href="#"
-                            onClick={gotoSearchIndex}
+                            onClick={() => setState('page', 'searchIndex')}
                             class="font-bold underline"
                         >
                             search index

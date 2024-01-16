@@ -1,29 +1,25 @@
 import { For } from 'solid-js';
-import { useAppContext } from './context';
+import { setState, state } from './state';
+import { splitPath } from './utils';
 
-const Breadcrumbs = (props: { page: string; kv: string; path: string }) => {
-    const { updateContext } = useAppContext();
+const Breadcrumbs = () => {
     const handleClick = (segment: string) => {
-        // Slice the path up to and including the clicked segment
-        const path = props.path
-            .split('/')
-            .slice(0, props.path.split('/').indexOf(segment) + 1)
-            .join('/');
-        updateContext({ page: 'list', path });
+        const path = splitPath(state.path)
+            .slice(0, splitPath(state.path).indexOf(segment) + 1)
+            .join('');
+        setState({ page: 'list', path });
     };
 
     return (
         <div>
-            <span onClick={() => updateContext({ page: 'list', path: '' })}>
-                {props.kv}
-            </span>
-            <For each={props.path.split('/').filter((s) => s)}>
+            <span onClick={() => setState({ page: 'list', path: '' })}>{state.kv}</span>
+            <For each={splitPath(state.path)}>
                 {(segment) => (
                     <span
                         class="[&:not(:last-of-type)]:cursor-pointer"
                         onClick={() => handleClick(segment)}
                     >
-                        {segment}/
+                        {segment}
                     </span>
                 )}
             </For>
