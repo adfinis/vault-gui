@@ -17,7 +17,7 @@ const Search: Component = () => {
     const searchIndexRaw = localStorage.getItem('searchIndex');
     const searchIndex = (): SearchIndexType => {
         try {
-            return JSON.parse(searchIndexRaw ?? {}) as SearchIndexType;
+            return JSON.parse(searchIndexRaw ?? '{}') as SearchIndexType;
         } catch (e) {
             console.log(e);
             return {};

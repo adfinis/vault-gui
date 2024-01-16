@@ -1,17 +1,20 @@
 import { invoke } from '@tauri-apps/api/tauri';
-import { createSignal, Show, type Component } from 'solid-js';
+import { type Component } from 'solid-js';
 import { useAppContext } from './context';
+import toast from 'solid-toast';
 
 const Login: Component = () => {
     const { updateContext } = useAppContext();
-    const [error, setError] = createSignal('');
 
     const oidcAuth = async () => {
         try {
-            await invoke('oidc_auth', { address: oidcURL(), mount: 'oidc' });
+            console.log(
+                await invoke('oidc_auth', { address: oidcURL(), mount: 'oidc' }),
+            );
             updateContext({ page: 'home' });
         } catch (e) {
-            setError(e);
+            toast.error(e);
+            return e;
         }
     };
 
@@ -38,11 +41,6 @@ const Login: Component = () => {
             >
                 OIDC Auth
             </button>
-            <Show when={error()}>
-                <div class="relative rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
-                    {error()}
-                </div>
-            </Show>
         </div>
     );
 };

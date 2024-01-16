@@ -2,16 +2,22 @@ import { writeText } from '@tauri-apps/api/clipboard';
 import { invoke } from '@tauri-apps/api/tauri';
 import { createResource, For, Show, type Component } from 'solid-js';
 import { useAppContext } from './context';
+import toast from 'solid-toast';
 
 const fetchSecret = async (contextValue: {
     page: string;
     kv: string;
     path: string;
-}): Promise<string[]> =>
-    await invoke('get_secret', {
-        mount: contextValue.kv,
-        path: contextValue.path,
-    });
+}): Promise<null | string[]> => {
+    try {
+        return await invoke('get_secret', {
+            mount: contextValue.kv,
+            path: contextValue.path,
+        });
+    } catch (e) {
+        toast(e);
+    }
+};
 
 const SecretView: Component = () => {
     const { contextValue } = useAppContext();
@@ -56,7 +62,12 @@ const SecretView: Component = () => {
                                     <td class="px-6 py-4 text-right">
                                         <a
                                             class="cursor-pointer font-medium text-blue-600 hover:underline dark:text-blue-500"
-                                            onClick={() => writeText(value)}
+                                            onClick={() => {
+                                                writeText(value);
+                                                toast.success(
+                                                    `Copied ${key} for ${contextValue().path} to clipboard`,
+                                                );
+                                            }}
                                         >
                                             Copy
                                         </a>

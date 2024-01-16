@@ -19,12 +19,13 @@ import Search from './Search';
 import SearchIndex from './SearchIndex';
 import SecretList from './SecretList';
 import SecretView from './SecretView';
+import { Toaster, toast } from 'solid-toast';
 
 const listKVS = async (): Promise<null | string[]> => {
     try {
         return await invoke('list_kvs');
     } catch (e) {
-        console.log(e);
+        toast.error(e);
     }
 };
 
@@ -122,6 +123,7 @@ const App: Component = () => {
                         <Dynamic component={pageMap[contextValue().page]} />
                     </main>
                 </AppContext.Provider>
+                <Toaster position="bottom-right" />
             </div>
         </>
     );
