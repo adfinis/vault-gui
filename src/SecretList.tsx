@@ -3,21 +3,27 @@ import { document as documentIcon, folder } from 'solid-heroicons/outline';
 import { createResource, createSignal, For, Show, type Component } from 'solid-js';
 import { useAppContext } from './context';
 import Item from './Item';
+import toast from 'solid-toast';
 
-const fetchSecret = async (contextValue: {
+const fetchPaths = async (contextValue: {
     page: string;
     kv: string;
     path: string;
-}): Promise<string[]> =>
-    await invoke('list_path', {
-        mount: contextValue.kv,
-        path: contextValue.path,
-    });
+}): Promise<null | string[]> => {
+    try {
+        return await invoke('list_path', {
+            mount: contextValue.kv,
+            path: contextValue.path,
+        });
+    } catch (e) {
+        toast.error(e);
+    }
+};
 
 const ListView: Component = () => {
     const { contextValue } = useAppContext();
 
-    const [secrets] = createResource(contextValue, fetchSecret);
+    const [secrets] = createResource(contextValue, fetchPaths);
     const [search, setSearch] = createSignal('');
 
     return (
