@@ -1,22 +1,18 @@
-import { For } from 'solid-js'
+import { Component, For } from 'solid-js'
 import { setState, state } from './state'
 
-const Breadcrumbs = (props) => {
+const Breadcrumbs: Component = () => {
   const handleClick = (segment: string) => {
-    console.log(segment)
-    if (props.path.lastIndexOf(segment) === props.path.length - 1)
-      return
+    if (state.path.indexOf(segment) === state.path.length - 1) return
 
     // // Slice the path up to and including the clicked segment
-    const path = props.path
-      .slice(0, props.path.split('/').indexOf(segment) + 1)
+    const path = state.path.slice(0, state.path.indexOf(segment) + 1)
     setState({ page: 'list', path })
-    console.log(segment)
   }
 
   return (
     <div>
-      <span onClick={() => setState({ page: 'list', path: [''] })}>{state.kv}</span>
+      <span onClick={() => setState({ page: 'list', path: [] })}>{state.kv}</span>
       <For each={state.path}>
         {segment => (
           <span

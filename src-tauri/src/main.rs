@@ -3,27 +3,30 @@
     windows_subsystem = "windows"
 )]
 
+use lazy_static::lazy_static;
 use std::collections::HashMap;
-use vaultrs::client::{VaultClient, VaultClientSettingsBuilder};
-use vaultrs::{kv2, sys};
+use std::sync::Arc;
 use tauri::api::shell;
 use tauri::{AppHandle, Manager};
 use tokio::sync::Mutex;
-use std::sync::Arc;
-use lazy_static::lazy_static;
-use vaultrs_login::LoginClient;
+use vaultrs::client::{VaultClient, VaultClientSettingsBuilder};
+use vaultrs::{kv2, sys};
 use vaultrs_login::engines::oidc::OIDCLogin;
+use vaultrs_login::LoginClient;
 
 lazy_static! {
     static ref GLOBAL_VAULT_CLIENT: Arc<Mutex<Option<VaultClient>>> = Arc::new(Mutex::new(None));
 }
 
-
 #[tauri::command]
-async fn oidc_auth(app_handle: AppHandle, address: String, mount: String) -> Result<String, String> {
-    let settings_builder =  VaultClientSettingsBuilder::default()
-            .address(&address)
-            .build();
+async fn oidc_auth(
+    app_handle: AppHandle,
+    address: String,
+    mount: String,
+) -> Result<String, String> {
+    let settings_builder = VaultClientSettingsBuilder::default()
+        .address(&address)
+        .build();
     let settings = match settings_builder {
         Ok(settings) => settings,
         Err(e) => return Err(format!("Error creating settings: {}", e)),
@@ -34,8 +37,10 @@ async fn oidc_auth(app_handle: AppHandle, address: String, mount: String) -> Res
         Err(e) => return Err(format!("Error creating VaultClient: {}", e)),
     };
 
-    let login = OIDCLogin {port: None, role: None};
-
+    let login = OIDCLogin {
+        port: None,
+        role: None,
+    };
 
     let callback = client.login_multi(&mount, login).await;
     let callback = match callback {
@@ -55,13 +60,15 @@ async fn oidc_auth(app_handle: AppHandle, address: String, mount: String) -> Res
     *global_client = Some(client);
 
     Ok("OK".to_string())
-
 }
 
 #[tauri::command]
 async fn list_kvs() -> Result<Vec<String>, String> {
     let guard = GLOBAL_VAULT_CLIENT.lock().await;
-    let client = guard.as_ref().ok_or_else(|| "VaultClient is not initialized".to_string())?;
+    println!("hi");
+    let client = guard
+        .as_ref()
+        .ok_or_else(|| "VaultClient is not initialized".to_string())?;
 
     let result = sys::mount::list(client).await;
     match result {
@@ -69,49 +76,41 @@ async fn list_kvs() -> Result<Vec<String>, String> {
             // Only return the string parts of the HashMap
             Ok(list.keys().cloned().collect())
         }
-        Err(e) => {
-            Err(format!("Error listing keys: {}", e))
-        }
+        Err(e) => Err(format!("Error listing keys: {}", e)),
     }
 }
 
 #[tauri::command]
 async fn list_path(mount: String, path: String) -> Result<Vec<String>, String> {
     let guard = GLOBAL_VAULT_CLIENT.lock().await;
-    let client = guard.as_ref().ok_or_else(|| "VaultClient is not initialized".to_string())?;
+    let client = guard
+        .as_ref()
+        .ok_or_else(|| "VaultClient is not initialized".to_string())?;
     let result = kv2::list(client, &mount, &path).await;
+    println!("mount={}, path={}", &mount, &path);
     match result {
-        Ok(list) => {
-            Ok(list)
-        }
-        Err(e) => {
-            Err(format!("Error listing keys: {}", e))
-        }
+        Ok(list) => Ok(list),
+        Err(e) => Err(format!("Error listing keys: {}", e)),
     }
 }
 
 #[tauri::command]
 async fn get_secret(mount: String, path: String) -> Result<HashMap<String, String>, String> {
     let guard = GLOBAL_VAULT_CLIENT.lock().await;
-    let client = guard.as_ref().ok_or_else(|| "VaultClient is not initialized".to_string())?;
+    let client = guard
+        .as_ref()
+        .ok_or_else(|| "VaultClient is not initialized".to_string())?;
     let result = kv2::read(client, &mount, &path).await;
     match result {
-        Ok(secret) => {
-            Ok(secret)
-        }
-        Err(e) => {
-            Err(format!("Error reading secret: {}", e))
-        }
+        Ok(secret) => Ok(secret),
+        Err(e) => Err(format!("Error reading secret: {}", e)),
     }
 }
 
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
-            oidc_auth,
-            list_kvs,
-            list_path,
-            get_secret
+            oidc_auth, list_kvs, list_path, get_secret
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

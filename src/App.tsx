@@ -2,8 +2,10 @@ import { invoke } from '@tauri-apps/api/tauri'
 import { lockClosed } from 'solid-heroicons/outline'
 import { createEffect, createResource, For, Show, type Component } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
+import { toast, Toaster } from 'solid-toast'
 import vault from './assets/vault-logo.svg'
 import Breadcrumbs from './Breadcrumbs'
+import Loading from './Loading'
 import Login from './Login'
 import Node from './Node'
 import SecretList from './SecretList'
@@ -14,7 +16,7 @@ const listKVS = async (): Promise<null | string[]> => {
   try {
     return await invoke('list_kvs')
   } catch (e) {
-    console.log(e)
+    toast.error(`${e}`)
   }
 }
 
@@ -33,8 +35,9 @@ const App: Component = () => {
   createEffect(() => {
     console.log(state)
   })
+
   createEffect(() => {
-    if (state.page === 'home') refetch()
+    if (state.page === 'home') void refetch()
   })
 
   return (
@@ -63,11 +66,9 @@ const App: Component = () => {
           classList={{ hidden: state.page === 'login' }}
         >
           <div class="mt-4">
-            <Show
-              when={state.page !== 'login' && kvs()}
-              fallback={<strong>loading...</strong>}
-            >
-              <For each={kvs().sort()}>
+            {kvs.loading && <Loading />}
+            <Show when={state.page !== 'login' && kvs()?.length}>
+              <For each={kvs()}>
                 {kv => <Node isSecret={false} kv={kv} path={[]} icon={lockClosed} />}
               </For>
             </Show>
@@ -78,6 +79,7 @@ const App: Component = () => {
             <Breadcrumbs />
           </h1>
           <Dynamic component={pageMap[state.page]} />
+          <Toaster />
         </main>
       </div>
     </>

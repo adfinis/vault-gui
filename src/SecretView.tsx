@@ -1,7 +1,12 @@
 import { writeText } from '@tauri-apps/api/clipboard'
 import { invoke } from '@tauri-apps/api/tauri'
 import { createResource, For, Show, type Component } from 'solid-js'
+import toast from 'solid-toast'
 import { state } from './state'
+
+interface Secret {
+  [key: string]: string
+}
 
 const fetchSecret = async ({
   kv,
@@ -9,7 +14,14 @@ const fetchSecret = async ({
 }: {
   kv: string
   path: string[]
-}): Promise<string[]> => await invoke('get_secret', { mount: kv, path: path.join('/') })
+}): Promise<Secret[]> => {
+  try {
+    return await invoke('get_secret', { mount: kv, path: path.join('/') })
+  } catch (e) {
+    toast.error(`${e}`)
+    return []
+  }
+}
 
 const SecretView: Component = () => {
   const [secrets] = createResource(

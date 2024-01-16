@@ -6,7 +6,8 @@ import {
   document as documentIcon,
   folder
 } from 'solid-heroicons/outline'
-import { createSignal, For, JSXElement, Show, type Component } from 'solid-js'
+import { createResource, For, JSXElement, Show, type Component } from 'solid-js'
+import { toast } from 'solid-toast'
 import Item from './Item'
 import { setState, state } from './state'
 
@@ -17,58 +18,62 @@ type NodeProps = {
   isSecret: boolean
 }
 
-const Node: Component<NodeProps> = props => {
-  const [nodes, setNodes] = createSignal([])
-  // const [expanded, setExpanded] = createSignal(false)
-
-  const chevron = () =>
-    props.isSecret || props.path == state.path ? chevronDown : chevronRight
-
-  const handleClick = () => {
-    let page: 'list' | 'view' = 'list'
-    if (props.isSecret && !props.path.length) {
-      page = 'view'
-    }
-    setState({ page, kv: props.kv, path: props.path })
-  }
-
-  const expanded = () =>
-    props.path.join('/') === state.path.slice(0, props.path.length - 1).join('/')
-
-  const listPath = async () => {
-    // setExpanded(v => !v)
-    if (expanded()) return
-
-    const response: string[] = await invoke('list_path', {
-      mount: props.kv,
-      path: props.path.join('/')
+const fetchPaths = async ({
+  kv,
+  path,
+  expanded
+}: NodeProps & { expanded: boolean }): Promise<NodeProps[]> => {
+  try {
+    if (!expanded) return []
+    const paths: string[] = await invoke('list_path', {
+      mount: kv,
+      path: path.join('/') ?? '/'
     })
-
-    if (!(response instanceof Array)) return
-    response.sort()
-    setNodes(
-      response.map(subpath => ({
-        kv: props.kv,
-        path: [...props.path, subpath.replace('/', '')],
-        isSecret: subpath.endsWith('/'),
-        icon: subpath.endsWith('/') ? folder : documentIcon
-      }))
-    )
+    return paths.map(subpath => ({
+      kv,
+      path: [...path, subpath.replace('/', '')],
+      isSecret: !subpath.endsWith('/'),
+      icon: subpath.endsWith('/') ? folder : documentIcon
+    }))
+  } catch (e) {
+    toast.error(`${e}`)
+    return []
   }
+}
+
+const Node: Component<NodeProps> = props => {
+  const expanded = () =>
+    props.kv === state.kv &&
+    props.path.join('/') == state.path.slice(0, props.path.length).join('/')
+
+  const [paths] = createResource(() => ({ ...props, expanded: expanded() }), fetchPaths)
+
+  const chevron = () => (props.isSecret || expanded() ? chevronDown : chevronRight)
 
   return (
     <div>
-      <div onClick={handleClick}>
-        <Show when={!props.isSecret || props.path.length}>
-          <Icon onClick={listPath} path={chevron()} class="h-[1em] inline" />
+      <div
+        onClick={() =>
+          setState({
+            page: props.isSecret ? 'view' : 'list',
+            isSecret: props.isSecret,
+            kv: props.kv,
+            path: props.path
+          })
+        }
+      >
+        <Show when={!props.isSecret}>
+          <Icon
+            onClick={() => setState({ kv: props.kv, path: props.path })}
+            path={chevron()}
+            class="h-[1em] inline"
+          />
         </Show>
         <Item {...props} />
       </div>
       <div class="pl-4">
-        <Show when={expanded()}>
-          <div>
-            <For each={nodes()}>{node => <Node class="ml-10" {...node} />}</For>
-          </div>
+        <Show when={paths()}>
+          <For each={paths()}>{path => <Node {...path} />}</For>
         </Show>
       </div>
     </div>
