@@ -25,17 +25,11 @@ const Search: Component = () => {
   }
   const runSearch = () => {
     console.log(`searching for ${search()}`)
-    const results: SearchResult[] = []
-    for (const [kv, paths] of Object.entries(searchIndex())) {
-      for (const path of paths) {
-        if (path.includes(search())) {
-          console.log(kv, path)
-          results.push({ kv, path })
-        }
-      }
-    }
+    const searchTerm = search()
+    const results = Object.entries(searchIndex()).flatMap(([kv, paths]) =>
+      paths.filter(path => path.includes(searchTerm)).map(path => ({ kv, path }))
+    )
     setSearchResults(results)
-    console.log(searchResults())
   }
 
   const { updateContext } = useAppContext()
