@@ -1,11 +1,11 @@
 [package]
-name = "vault-gui-app"
+name = "vault-gui"
 version = "1.0.0"
 description = "A Tauri App for using Hashicorps Vault"
 authors = ["c0rydoras", "Gian Klug <gian.klug@adfinis.com>"]
 license = "MIT"
 repository = "https://github.com/c0rydoras/vault-gui"
-default-run = "vault-gui-app"
+default-run = "vault-gui"
 edition = "2021"
 build = "src/build.rs"
 
