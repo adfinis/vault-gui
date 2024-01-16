@@ -2,6 +2,9 @@
   "name": "vault-gui",
   "version": "1.0.0",
   "author": "c0rydoras",
+  "contributors": [
+      {"name": "Gian Klug", "email": "gian.klug@adfinis.com"}
+   ],
   "type": "module",
   "scripts": {
     "build": "vite build --config vite.config.tauri.js",
