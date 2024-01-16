@@ -12,10 +12,12 @@
     "dev": "vite --config vite.config.tauri.js",
     "dev:vite": "vite dev",
     "preview": "vite preview",
-    "lint": "concurrently --raw \"pnpm run lint:js\"",
-    "lint:fix": "concurrently --raw \"pnpm run lint:js:fix\"",
+    "lint": "concurrently \"npm:lint:*(!fix)\" --names \"lint:\"",
+    "lint:fix": "concurrently \"npm:lint:*:fix\" --names \"fix:\"",
     "lint:js": "eslint .",
-    "lint:js:fix": "eslint . --fix"
+    "lint:js:fix": "eslint . --fix",
+    "lint:css": "stylelint \"./src/**/*.css\"",
+    "lint:css:fix": "stylelint \"./src/**/*.css\" -- --fix"
   },
   "license": "MIT",
   "devDependencies": {
@@ -33,6 +35,8 @@
     "postcss": "8.4.33",
     "prettier": "3.2.1",
     "prettier-plugin-tailwindcss": "0.5.11",
+    "stylelint": "^16.1.0",
+    "stylelint-config-standard": "^36.0.0",
     "tailwindcss": "3.4.1",
     "typescript": "5.3.3",
     "vite": "5.0.11",
