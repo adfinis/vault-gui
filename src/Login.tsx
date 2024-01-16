@@ -1,20 +1,17 @@
 import { invoke } from '@tauri-apps/api/tauri';
 import { type Component } from 'solid-js';
-import { useAppContext } from './context';
 import toast from 'solid-toast';
+import { setState } from './state';
 
 const Login: Component = () => {
-    const { updateContext } = useAppContext();
-
-    const oidcAuth = async () => {
+    const oidcAuth = async (): Promise<void> => {
         try {
             console.log(
                 await invoke('oidc_auth', { address: oidcURL(), mount: 'oidc' }),
             );
-            updateContext({ page: 'home' });
+            setState('page', 'home');
         } catch (e) {
             toast.error(e);
-            return e;
         }
     };
 

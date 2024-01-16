@@ -7,8 +7,8 @@ import {
     folder,
 } from 'solid-heroicons/outline';
 import { createSignal, For, JSXElement, Show, type Component } from 'solid-js';
-import { useAppContext } from './context';
 import Item from './Item';
+import { setState } from './state';
 
 type NodeProps = {
     icon: { path: JSXElement; outline: boolean; mini: boolean };
@@ -18,21 +18,11 @@ type NodeProps = {
 };
 
 const Node: Component<NodeProps> = (props) => {
-    const { updateContext } = useAppContext();
-
     const [children, setChildren] = createSignal([]);
     const [expanded, setExpanded] = createSignal(false);
 
     const chevron = () =>
         props.path.endsWith('/') || props.path === '' ? chevronDown : chevronRight;
-
-    const handleClick = () => {
-        let page: string = 'list';
-        if (!props.path.endsWith('/') && props.path !== '') {
-            page = 'view';
-        }
-        updateContext({ page, kv: props.kv, path: props.path });
-    };
 
     const listPath = async () => {
         setExpanded((v) => !v);
@@ -56,7 +46,15 @@ const Node: Component<NodeProps> = (props) => {
 
     return (
         <div>
-            <div onClick={handleClick}>
+            <div
+                onClick={() =>
+                    setState({
+                        page: props.path.endsWith('/') || !props.path ? 'list' : 'view',
+                        kv: props.kv,
+                        path: props.path,
+                    })
+                }
+            >
                 <Show when={props.path.endsWith('/') || props.path === ''}>
                     <Icon onClick={listPath} path={chevron()} class="inline h-[1em]" />
                 </Show>

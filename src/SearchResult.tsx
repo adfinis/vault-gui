@@ -1,5 +1,6 @@
 import { type Component } from 'solid-js';
-import { useAppContext } from './context';
+import { setState } from './state';
+import { Page } from './shared';
 
 type SearchResultProps = {
     kv: string;
@@ -7,14 +8,12 @@ type SearchResultProps = {
 };
 
 const SearchResult: Component<SearchResultProps> = (props) => {
-    const { updateContext } = useAppContext();
-
     const handleClick = () => {
-        let page: string = 'list';
+        let page: Page = 'list';
         if (!props.path.endsWith('/') && props.path !== '') {
             page = 'view';
         }
-        updateContext({ page, kv: props.kv, path: props.path });
+        setState({ page, kv: props.kv, path: props.path });
     };
 
     return (

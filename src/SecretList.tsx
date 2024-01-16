@@ -1,29 +1,15 @@
-import { invoke } from '@tauri-apps/api/tauri';
 import { document as documentIcon, folder } from 'solid-heroicons/outline';
 import { createResource, createSignal, For, Show, type Component } from 'solid-js';
-import { useAppContext } from './context';
 import Item from './Item';
-import toast from 'solid-toast';
-
-const fetchPaths = async (contextValue: {
-    page: string;
-    kv: string;
-    path: string;
-}): Promise<null | string[]> => {
-    try {
-        return await invoke('list_path', {
-            mount: contextValue.kv,
-            path: contextValue.path,
-        });
-    } catch (e) {
-        toast.error(e);
-    }
-};
+import { fetchPaths } from './utils';
+import { state } from './state';
 
 const ListView: Component = () => {
-    const { contextValue } = useAppContext();
+    const [secrets] = createResource(
+        () => ({ mount: state.kv, path: state.path }),
+        fetchPaths,
+    );
 
-    const [secrets] = createResource(contextValue, fetchPaths);
     const [search, setSearch] = createSignal('');
 
     return (
@@ -35,14 +21,15 @@ const ListView: Component = () => {
                 onInput={(e) => setSearch(e.currentTarget.value)}
                 placeholder="Filter results..."
             />
-            <Show when={secrets()} fallback={<span class="text-bold">Loading...</span>}>
+            {secrets.loading && <strong>Loading...</strong>}
+            <Show when={secrets()}>
                 <For each={secrets()}>
                     {(item) => (
                         <div>
                             <Show when={item.includes(search()) || search() === ''}>
                                 <Item
-                                    kv={contextValue().kv}
-                                    path={contextValue().path + '/' + item}
+                                    kv={state.kv}
+                                    path={state.path + item}
                                     icon={item.endsWith('/') ? folder : documentIcon}
                                 />
                             </Show>
