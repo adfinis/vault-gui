@@ -26,7 +26,9 @@ const SearchIndex: Component = () => {
     const allPaths: string[] = [...paths]
 
     for (const path of paths) {
-      console.log(path)
+      if (!path.endsWith('/') && path !== '') {
+        continue
+      }
       setStatus(`Indexing ${kv}${path}`)
       const subPaths = await listPaths(kv, path)
       if (subPaths && subPaths.length > 0) {
