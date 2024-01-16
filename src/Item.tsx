@@ -16,6 +16,7 @@ const Item: Component<ItemProps> = (props) => {
                 setState({
                     page: props.path.endsWith('/') || !props.path ? 'list' : 'view',
                     path: props.path,
+                    kv: props.kv,
                 })
             }
             class="cursor-pointer"
