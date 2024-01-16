@@ -1,37 +1,37 @@
 module.exports = {
   env: {
     browser: true,
-    es2021: true
+    es2021: true,
   },
-  parser: '@typescript-eslint/parser',
-  plugins: ['solid', 'prettier', '@typescript-eslint'],
+  parser: "@typescript-eslint/parser",
+  plugins: ["solid", "prettier", "@typescript-eslint"],
   extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:solid/typescript',
-    'plugin:prettier/recommended'
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:solid/recommended",
+    "plugin:solid/typescript",
+    "plugin:prettier/recommended",
   ],
   overrides: [
     {
-      files: ['./src/**/*.tsx', './src/**/*.ts'],
+      files: ["./src/**/*.tsx", "./src/**/*.ts"],
       env: {
         browser: true,
-        es2022: true
-      }
+        es2022: true,
+      },
     },
     {
       env: {
-        node: true
+        node: true,
       },
-      files: ['.*rc.cjs', '*.config*.js'],
+      files: [".*rc.cjs", "*.config*.js"],
       parserOptions: {
-        sourceType: 'script'
-      }
-    }
+        sourceType: "script",
+      },
+    },
   ],
   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module'
+    ecmaVersion: "latest",
+    sourceType: "module",
   },
-  rules: {}
-}
+};
