@@ -1,6 +1,6 @@
 import { invoke } from '@tauri-apps/api/tauri';
 import { Icon } from 'solid-heroicons';
-import { lockClosed, magnifyingGlass } from 'solid-heroicons/outline';
+import { lockClosed, magnifyingGlass, arrowLeft } from 'solid-heroicons/outline';
 import { createEffect, createResource, For, Show, type Component } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import vault from './assets/vault-logo.svg';
@@ -12,7 +12,7 @@ import SearchIndex from './SearchIndex';
 import SecretList from './SecretList';
 import SecretView from './SecretView';
 import { Toaster, toast } from 'solid-toast';
-import { setState, state } from './state';
+import { setState, state, goBack } from './state';
 
 const listKVS = async (): Promise<null | string[]> => {
     try {
@@ -85,6 +85,12 @@ const App: Component = () => {
                             <strong>Loading...</strong>
                         )}
                         <Show when={state.page !== 'login' && kvs()}>
+                            <div
+                                class="btn btn-primary mb-5 ml-2 hover:cursor-pointer"
+                                onClick={goBack}
+                            >
+                                <Icon path={arrowLeft} class="h-5 w-5" />
+                            </div>
                             <For each={kvs().sort()}>
                                 {(kv) => <Node kv={kv} path="" icon={lockClosed} />}
                             </For>

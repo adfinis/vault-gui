@@ -9,7 +9,7 @@ const Login: Component = () => {
             console.log(
                 await invoke('oidc_auth', { address: oidcURL(), mount: 'oidc' }),
             );
-            setState('page', 'home');
+            setState({ page: 'home' });
         } catch (e) {
             toast.error(e);
         }

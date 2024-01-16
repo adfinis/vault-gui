@@ -67,7 +67,7 @@ const Search: Component = () => {
                         No results? Try creating a{' '}
                         <a
                             href="#"
-                            onClick={() => setState('page', 'searchIndex')}
+                            onClick={() => setState({ page: 'searchIndex' })}
                             class="font-bold underline"
                         >
                             search index
