@@ -1,20 +1,22 @@
 import { invoke } from '@tauri-apps/api/tauri'
 import { document as documentIcon, folder } from 'solid-heroicons/outline'
 import { createResource, For, Show, type Component } from 'solid-js'
-import { useAppContext } from './context'
 import Item from './Item'
+import { state } from './state'
 
-const fetchSecret = async (contextValue: {
-  page: string
+const fetchSecret = async ({
+  kv,
+  path
+}: {
   kv: string
-  path: string
-}): Promise<string[]> =>
-  await invoke('list_path', { mount: contextValue.kv, path: contextValue.path })
+  path: string[]
+}): Promise<string[]> => await invoke('list_path', { mount: kv, path: path.join('/') })
 
 const ListView: Component = () => {
-  const { contextValue } = useAppContext()
-
-  const [secrets] = createResource(contextValue, fetchSecret)
+  const [secrets] = createResource(
+    () => ({ kv: state.kv, path: state.path }),
+    fetchSecret
+  )
 
   return (
     <div class="p-5">
@@ -23,8 +25,9 @@ const ListView: Component = () => {
           {item => (
             <div>
               <Item
-                kv={contextValue().kv}
-                path={contextValue().path + item}
+                kv={state.kv}
+                path={[...state.path, item.replace('/', '')]}
+                isSecret={!item.endsWith('/')}
                 icon={item.endsWith('/') ? folder : documentIcon}
               />
             </div>

@@ -1,39 +1,36 @@
 import { Icon } from 'solid-heroicons'
 import { JSXElement, Show, type Component } from 'solid-js'
-import { useAppContext } from './context'
+import { setState, state } from './state'
 
 type ItemProps = {
   icon: { path: JSXElement; outline: boolean; mini: boolean }
   kv: string
-  path: string
+  path: string[]
+  isSecret: boolean
 }
 
 const Item: Component<ItemProps> = props => {
-  const { contextValue, updateContext } = useAppContext()
-
-  const handleClick = () => {
-    let page: string = 'list'
-    if (!props.path.endsWith('/') && props.path !== '') {
-      page = 'view'
-    }
-    updateContext({ page, kv: props.kv, path: props.path })
-  }
-
   return (
-    <span onClick={handleClick} class="cursor-pointer">
+    <span
+      onClick={() =>
+        setState({
+          page: props.isSecret && props.path.length ? 'view' : 'list',
+          kv: props.kv,
+          path: props.path
+        })
+      }
+      class="cursor-pointer"
+    >
       <Icon path={props.icon} class="h-[1em] inline" />
       <span
         classList={{
-          'font-bold': contextValue().path === props.path && props.path !== ''
+          'font-bold': state.path === props.path && !!state.path.length
         }}
       >
-        <Show
-          when={props.path === ''}
-          fallback={props.path.replace(/\/+$/, '').split('/').pop()}
-        >
+        <Show when={!props.path.length} fallback={props.path.at(-1)}>
           <span
             classList={{
-              'font-bold': contextValue().path === '' && contextValue().kv === props.kv
+              'font-bold': !state.path.length && state.kv === props.kv
             }}
           >
             {props.kv}

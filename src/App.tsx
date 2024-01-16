@@ -1,21 +1,14 @@
 import { invoke } from '@tauri-apps/api/tauri'
 import { lockClosed } from 'solid-heroicons/outline'
-import {
-  createEffect,
-  createResource,
-  createSignal,
-  For,
-  Show,
-  type Component
-} from 'solid-js'
+import { createEffect, createResource, For, Show, type Component } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import vault from './assets/vault-logo.svg'
 import Breadcrumbs from './Breadcrumbs'
-import { AppContext } from './context'
 import Login from './Login'
 import Node from './Node'
 import SecretList from './SecretList'
 import SecretView from './SecretView'
+import { state } from './state'
 
 const listKVS = async (): Promise<null | string[]> => {
   try {
@@ -36,24 +29,13 @@ const pageMap: { [key: string]: Component } = {
 
 const App: Component = () => {
   const [kvs, { refetch }] = createResource(listKVS)
-  const [contextValue, setContextValue] = createSignal({
-    page: 'login',
-    kv: '',
-    path: ''
-  })
 
   createEffect(() => {
-    if (contextValue().page === 'home') refetch()
+    console.log(state)
   })
-
-  const updateContext = (newValues: {
-    page?: string
-    kv?: string
-    path?: string
-  }): void => {
-    console.log({ ...contextValue(), ...newValues })
-    setContextValue({ ...contextValue(), ...newValues })
-  }
+  createEffect(() => {
+    if (state.page === 'home') refetch()
+  })
 
   return (
     <>
@@ -76,29 +58,27 @@ const App: Component = () => {
         </div>
       </header>
       <div class="flex">
-        <AppContext.Provider value={{ contextValue, updateContext }}>
-          <div
-            class="w-1/3 resize-x overflow-auto bg-neutral-100 border-r pl-2"
-            classList={{ hidden: contextValue().page === 'login' }}
-          >
-            <div class="mt-4">
-              <Show
-                when={contextValue().page !== 'login' && kvs()}
-                fallback={<strong>loading...</strong>}
-              >
-                <For each={kvs().sort()}>
-                  {kv => <Node kv={kv} path="" icon={lockClosed} />}
-                </For>
-              </Show>
-            </div>
+        <div
+          class="w-1/3 resize-x overflow-auto bg-neutral-100 border-r pl-2"
+          classList={{ hidden: state.page === 'login' }}
+        >
+          <div class="mt-4">
+            <Show
+              when={state.page !== 'login' && kvs()}
+              fallback={<strong>loading...</strong>}
+            >
+              <For each={kvs().sort()}>
+                {kv => <Node isSecret={false} kv={kv} path={[]} icon={lockClosed} />}
+              </For>
+            </Show>
           </div>
-          <main class="flex-1 p-5">
-            <h1 class="font-bold text-xl">
-              <Breadcrumbs kv={contextValue().kv} path={contextValue().path} />
-            </h1>
-            <Dynamic component={pageMap[contextValue().page]} />
-          </main>
-        </AppContext.Provider>
+        </div>
+        <main class="flex-1 p-5">
+          <h1 class="font-bold text-xl">
+            <Breadcrumbs />
+          </h1>
+          <Dynamic component={pageMap[state.page]} />
+        </main>
       </div>
     </>
   )

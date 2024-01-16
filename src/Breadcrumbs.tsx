@@ -1,39 +1,32 @@
-import { useAppContext } from './context'
+import { For } from 'solid-js'
+import { setState, state } from './state'
 
-const Breadcrumbs = (props: { page: string; kv: string; path: string }) => {
-  const { updateContext } = useAppContext()
+const Breadcrumbs = (props) => {
+  const handleClick = (segment: string) => {
+    console.log(segment)
+    if (props.path.lastIndexOf(segment) === props.path.length - 1)
+      return
 
-  const handleClick = (index: number) => {
-    // Slice the path up to and including the clicked segment
-    const newPath =
-      props.path
-        .split('/')
-        .slice(0, index + 1)
-        .join('/') + '/'
-    updateContext({ page: 'list', kv: props.kv, path: newPath })
-  }
-
-  const handleKvClick = () => {
-    updateContext({ page: 'list', kv: props.kv, path: '' })
+    // // Slice the path up to and including the clicked segment
+    const path = props.path
+      .slice(0, props.path.split('/').indexOf(segment) + 1)
+    setState({ page: 'list', path })
+    console.log(segment)
   }
 
   return (
     <div>
-      <a href="#" onClick={handleKvClick}>
-        {props.kv}
-      </a>
-      {props.path.split('/').map((segment, index, array) => (
-        <span>
-          {index < array.length - 1 ? (
-            // Making each segment clickable, except the last one
-            <a href="#" onClick={() => handleClick(index)}>
-              {segment}/
-            </a>
-          ) : (
-            <span>{segment}</span>
-          )}
-        </span>
-      ))}
+      <span onClick={() => setState({ page: 'list', path: [''] })}>{state.kv}</span>
+      <For each={state.path}>
+        {segment => (
+          <span
+            class="[&:not(:last-of-type)]:cursor-pointer"
+            onClick={() => handleClick(segment)}
+          >
+            {segment}/
+          </span>
+        )}
+      </For>
     </div>
   )
 }

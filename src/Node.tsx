@@ -7,47 +7,50 @@ import {
   folder
 } from 'solid-heroicons/outline'
 import { createSignal, For, JSXElement, Show, type Component } from 'solid-js'
-import { useAppContext } from './context'
 import Item from './Item'
+import { setState, state } from './state'
 
 type NodeProps = {
   icon: { path: JSXElement; outline: boolean; mini: boolean }
   kv: string
-  path: string
-  displaySecret?: (path: string, kv: string) => void
+  path: string[]
+  isSecret: boolean
 }
 
 const Node: Component<NodeProps> = props => {
-  const { updateContext } = useAppContext()
-
-  const [children, setChildren] = createSignal([])
-  const [expanded, setExpanded] = createSignal(false)
+  const [nodes, setNodes] = createSignal([])
+  // const [expanded, setExpanded] = createSignal(false)
 
   const chevron = () =>
-    props.path.endsWith('/') || props.path === '' ? chevronDown : chevronRight
+    props.isSecret || props.path == state.path ? chevronDown : chevronRight
 
   const handleClick = () => {
-    let page: string = 'list'
-    if (!props.path.endsWith('/') && props.path !== '') {
+    let page: 'list' | 'view' = 'list'
+    if (props.isSecret && !props.path.length) {
       page = 'view'
     }
-    updateContext({ page, kv: props.kv, path: props.path })
+    setState({ page, kv: props.kv, path: props.path })
   }
 
+  const expanded = () =>
+    props.path.join('/') === state.path.slice(0, props.path.length - 1).join('/')
+
   const listPath = async () => {
-    setExpanded(v => !v)
+    // setExpanded(v => !v)
     if (expanded()) return
 
     const response: string[] = await invoke('list_path', {
       mount: props.kv,
-      path: props.path
+      path: props.path.join('/')
     })
+
     if (!(response instanceof Array)) return
     response.sort()
-    setChildren(
+    setNodes(
       response.map(subpath => ({
         kv: props.kv,
-        path: props.path + subpath,
+        path: [...props.path, subpath.replace('/', '')],
+        isSecret: subpath.endsWith('/'),
         icon: subpath.endsWith('/') ? folder : documentIcon
       }))
     )
@@ -56,7 +59,7 @@ const Node: Component<NodeProps> = props => {
   return (
     <div>
       <div onClick={handleClick}>
-        <Show when={props.path.endsWith('/') || props.path === ''}>
+        <Show when={!props.isSecret || props.path.length}>
           <Icon onClick={listPath} path={chevron()} class="h-[1em] inline" />
         </Show>
         <Item {...props} />
@@ -64,7 +67,7 @@ const Node: Component<NodeProps> = props => {
       <div class="pl-4">
         <Show when={expanded()}>
           <div>
-            <For each={children()}>{child => <Node class="ml-10" {...child} />}</For>
+            <For each={nodes()}>{node => <Node class="ml-10" {...node} />}</For>
           </div>
         </Show>
       </div>

@@ -1,16 +1,16 @@
 import { invoke } from '@tauri-apps/api/tauri'
 import { createSignal, Show, type Component } from 'solid-js'
-import { useAppContext } from './context'
+import { setState } from './state'
 
 const Login: Component = () => {
-  const { updateContext } = useAppContext()
   const [error, setError] = createSignal('')
 
   const oidcAuth = async () => {
     try {
       await invoke('oidc_auth', { address: oidcURL(), mount: 'oidc' })
-      updateContext({ page: 'home' })
+      setState('page', 'home')
     } catch (e) {
+      console.log(e)
       setError(e)
     }
   }

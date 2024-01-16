@@ -1,18 +1,21 @@
 import { writeText } from '@tauri-apps/api/clipboard'
 import { invoke } from '@tauri-apps/api/tauri'
 import { createResource, For, Show, type Component } from 'solid-js'
-import { useAppContext } from './context'
+import { state } from './state'
 
-const fetchSecret = async (contextValue: {
-  page: string
+const fetchSecret = async ({
+  kv,
+  path
+}: {
   kv: string
-  path: string
-}): Promise<string[]> =>
-  await invoke('get_secret', { mount: contextValue.kv, path: contextValue.path })
+  path: string[]
+}): Promise<string[]> => await invoke('get_secret', { mount: kv, path: path.join('/') })
 
 const SecretView: Component = () => {
-  const { contextValue } = useAppContext()
-  const [secrets] = createResource(contextValue, fetchSecret)
+  const [secrets] = createResource(
+    () => ({ kv: state.kv, path: state.path }),
+    fetchSecret
+  )
 
   return (
     <div>
