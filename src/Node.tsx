@@ -6,7 +6,7 @@ import {
   document as documentIcon,
   folder
 } from 'solid-heroicons/outline'
-import { createResource, For, JSXElement, Show, type Component } from 'solid-js'
+import { createResource, For, JSXElement, Show, type Component, createSignal, createEffect } from 'solid-js'
 import { toast } from 'solid-toast'
 import Item from './Item'
 import { setState, state } from './state'
@@ -18,37 +18,39 @@ type NodeProps = {
   isSecret: boolean
 }
 
-const fetchPaths = async ({
-  kv,
-  path,
-  expanded
-}: NodeProps & { expanded: boolean }): Promise<NodeProps[]> => {
-  try {
-    if (!expanded) return []
-    const paths: string[] = await invoke('list_path', {
-      mount: kv,
-      path: path.join('/') ?? '/'
-    })
-    return paths.map(subpath => ({
-      kv,
-      path: [...path, subpath.replace('/', '')],
-      isSecret: !subpath.endsWith('/'),
-      icon: subpath.endsWith('/') ? folder : documentIcon
-    }))
-  } catch (e) {
-    toast.error(`${e}`)
-    return []
-  }
-}
 
 const Node: Component<NodeProps> = props => {
   const expanded = () =>
     props.kv === state.kv &&
     props.path.join('/') == state.path.slice(0, props.path.length).join('/')
 
-  const [paths] = createResource(() => ({ ...props, expanded: expanded() }), fetchPaths)
-
+  const [paths, setPaths] = createSignal([])
   const chevron = () => (props.isSecret || expanded() ? chevronDown : chevronRight)
+
+  const fetchPaths = async () => {
+    try {
+      const paths: string[] = await invoke('list_path', {
+        mount: props.kv,
+        path: props.path.join('/') + '/'
+      })
+
+      setPaths(paths.map(subpath => ({
+        kv: props.kv,
+        path: [...props.path, subpath.replace('/', '')],
+        isSecret: !subpath.endsWith('/'),
+        icon: subpath.endsWith('/') ? folder : documentIcon
+      })))
+
+    } catch (e) {
+      toast.error(`${e}`)
+      return []
+    }
+  };
+
+  createEffect(() => {
+    if (expanded()) void fetchPaths()
+    console.log(paths(), state)
+  })
 
   return (
     <div>

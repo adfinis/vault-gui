@@ -3,18 +3,20 @@ import { document as documentIcon, folder } from 'solid-heroicons/outline'
 import { createResource, For, Show, Switch, type Component } from 'solid-js'
 import { toast } from 'solid-toast'
 import Item from './Item'
-import Loading from './Loading'
 import { state } from './state'
 
 const fetchPath = async ({
   kv,
-  path
+  path,
+  isSecret
 }: {
   kv: string
   path: string[]
+  isSecret: boolean
 }): Promise<string[]> => {
   try {
-    return await invoke('list_path', { mount: kv, path: path.join('/') })
+    if (isSecret) return []
+    return await invoke('list_path', { mount: kv, path: path.join('/') + '/' })
   } catch (e) {
     toast.error(`${e}`)
     return []
@@ -22,7 +24,7 @@ const fetchPath = async ({
 }
 
 const ListView: Component = () => {
-  const [paths] = createResource(() => ({ kv: state.kv, path: state.path }), fetchPath)
+  const [paths] = createResource(() => ({ kv: state.kv, path: state.path, isSecret: state.isSecret }), fetchPath)
 
   return (
     <div class="p-5">

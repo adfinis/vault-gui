@@ -14,12 +14,12 @@ const fetchSecret = async ({
 }: {
   kv: string
   path: string[]
-}): Promise<Secret[]> => {
+}): Promise<Secret> => {
   try {
     return await invoke('get_secret', { mount: kv, path: path.join('/') })
   } catch (e) {
     toast.error(`${e}`)
-    return []
+    return {}
   }
 }
 
