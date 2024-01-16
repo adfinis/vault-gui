@@ -22,12 +22,22 @@ const Item: Component<ItemProps> = props => {
   return (
     <span onClick={handleClick} class="cursor-pointer">
       <Icon path={props.icon} class="h-[1em] inline" />
-      <span classList={{ 'font-bold': contextValue().path === props.path }}>
+      <span
+        classList={{
+          'font-bold': contextValue().path === props.path && props.path !== ''
+        }}
+      >
         <Show
           when={props.path === ''}
           fallback={props.path.replace(/\/+$/, '').split('/').pop()}
         >
-          {props.kv}
+          <span
+            classList={{
+              'font-bold': contextValue().path === '' && contextValue().kv === props.kv
+            }}
+          >
+            {props.kv}
+          </span>
         </Show>
       </span>
     </span>

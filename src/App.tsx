@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/tauri'
-import { lockClosed } from 'solid-heroicons/outline'
+import { Icon } from 'solid-heroicons'
+import { lockClosed, magnifyingGlass } from 'solid-heroicons/outline'
 import {
   createEffect,
   createResource,
@@ -10,9 +11,12 @@ import {
 } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import vault from './assets/vault-logo.svg'
+import Breadcrumbs from './Breadcrumbs'
 import { AppContext } from './context'
 import Login from './Login'
 import Node from './Node'
+import Search from './Search'
+import SearchIndex from './SearchIndex'
 import SecretList from './SecretList'
 import SecretView from './SecretView'
 
@@ -30,7 +34,9 @@ const pageMap: { [key: string]: Component } = {
   home: Home,
   login: Login,
   view: SecretView,
-  list: SecretList
+  list: SecretList,
+  searchIndex: SearchIndex,
+  search: Search
 }
 
 const App: Component = () => {
@@ -64,12 +70,17 @@ const App: Component = () => {
               <span class="font-bold inline-block text-white">Vault</span>
             </a>
             <nav class="flex items-center space-x-6 text-sm font-medium">
-              <a
-                class="text-foreground/60 hover:text-foreground/80 hidden no-underline transition-colors lg:block"
-                href="#TODO:add-page"
-              >
-                Add
-              </a>
+              <Show when={contextValue().page !== 'login'}>
+                <a
+                  class="text-foreground/60 hover:text-foreground/80 no-underline transition-colors lg:block"
+                  href="#"
+                  onClick={() =>
+                    updateContext({ page: 'search', kv: 'Search', path: '' })
+                  }
+                >
+                  <Icon path={magnifyingGlass} class="h-5 w-5 text-white" />
+                </a>
+              </Show>
             </nav>
           </div>
         </div>
@@ -93,8 +104,7 @@ const App: Component = () => {
           </div>
           <main class="flex-1 p-5">
             <h1 class="font-bold text-xl">
-              {contextValue().kv}
-              {contextValue().path}
+              <Breadcrumbs kv={contextValue().kv} path={contextValue().path} />
             </h1>
             <Dynamic component={pageMap[contextValue().page]} />
           </main>
