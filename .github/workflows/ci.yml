@@ -58,7 +58,7 @@ jobs:
         run: pnpm install
 
       - name: Build 🔧
-        run: pnpm build:tauri
+        run: pnpm build
 
   lint:
     runs-on: ubuntu-latest
