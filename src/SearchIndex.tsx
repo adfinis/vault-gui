@@ -84,9 +84,9 @@ const SearchIndex: Component = () => {
         <div class="w-full bg-gray-200 rounded-full h-1.5 mb-4 dark:bg-gray-700 mt-4">
           <div
             class="bg-blue-600 h-1.5 rounded-full dark:bg-blue-500"
-            style={`width: ${(progress() / maxProgress()) * 100}%`}
-          ></div>
-          <span>{status}</span>
+            style={{ width: `${(progress() / maxProgress()) * 100}%` }}
+          />
+          <span>{status()}</span>
         </div>
       </div>
     </div>

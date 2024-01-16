@@ -3,7 +3,6 @@ import { useAppContext } from './context'
 
 const Breadcrumbs = (props: { page: string; kv: string; path: string }) => {
   const { updateContext } = useAppContext()
-  console.log(props.path.split('/'))
   const handleClick = (segment: string) => {
     // Slice the path up to and including the clicked segment
     const path = props.path
