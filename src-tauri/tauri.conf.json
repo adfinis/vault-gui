@@ -2,7 +2,7 @@
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
     "devPath": "out",
-    "distDir": "out"
+    "distDir": "../dist"
   },
   "package": {
     "productName": "VaultGUI",
