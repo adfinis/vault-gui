@@ -46,17 +46,11 @@ const Node: Component<NodeProps> = (props) => {
 
     return (
         <div>
-            <div
-                onClick={() =>
-                    setState({
-                        page: props.path.endsWith('/') || !props.path ? 'list' : 'view',
-                        kv: props.kv,
-                        path: props.path,
-                    })
-                }
-            >
+            <div>
                 <Show when={props.path.endsWith('/') || props.path === ''}>
-                    <Icon onClick={listPath} path={chevron()} class="inline h-[1em]" />
+                    <button class="btn inline-block cursor-pointer" onClick={listPath}>
+                        <Icon path={chevron()} class="inline h-[1em]" />
+                    </button>
                 </Show>
                 <Item {...props} />
             </div>
@@ -64,7 +58,22 @@ const Node: Component<NodeProps> = (props) => {
                 <Show when={expanded()}>
                     <div>
                         <For each={children()}>
-                            {(child) => <Node class="ml-10" {...child} />}
+                            {(child) => (
+                                <Node
+                                    class="ml-10"
+                                    onClick={() =>
+                                        setState({
+                                            page:
+                                                child.path.endsWith('/') || !child.path
+                                                    ? 'list'
+                                                    : 'view',
+                                            kv: child.kv,
+                                            path: child.path,
+                                        })
+                                    }
+                                    {...child}
+                                />
+                            )}
                         </For>
                     </div>
                 </Show>
