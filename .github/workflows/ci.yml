@@ -80,5 +80,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Lint with eslint 🧹
+      - name: Lint 🧹
         run: pnpm lint
