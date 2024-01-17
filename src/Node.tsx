@@ -8,7 +8,6 @@ import {
 } from 'solid-heroicons/outline';
 import { createSignal, For, JSXElement, Show, type Component } from 'solid-js';
 import Item from './Item';
-import { setState } from './state';
 
 type NodeProps = {
     icon: { path: JSXElement; outline: boolean; mini: boolean };
@@ -21,12 +20,11 @@ const Node: Component<NodeProps> = (props) => {
     const [children, setChildren] = createSignal([]);
     const [expanded, setExpanded] = createSignal(false);
 
-    const chevron = () =>
-        props.path.endsWith('/') || props.path === '' ? chevronDown : chevronRight;
+    const chevron = () => (expanded() ? chevronDown : chevronRight);
 
     const listPath = async () => {
         setExpanded((v) => !v);
-        if (expanded()) return;
+        if (!expanded()) return;
 
         const response: string[] = await invoke('list_path', {
             mount: props.kv,
@@ -46,17 +44,11 @@ const Node: Component<NodeProps> = (props) => {
 
     return (
         <div>
-            <div
-                onClick={() =>
-                    setState({
-                        page: props.path.endsWith('/') || !props.path ? 'list' : 'view',
-                        kv: props.kv,
-                        path: props.path,
-                    })
-                }
-            >
+            <div>
                 <Show when={props.path.endsWith('/') || props.path === ''}>
-                    <Icon onClick={listPath} path={chevron()} class="inline h-[1em]" />
+                    <button class="inline-block" onClick={listPath}>
+                        <Icon path={chevron()} class="inline h-[1em]" />
+                    </button>
                 </Show>
                 <Item {...props} />
             </div>

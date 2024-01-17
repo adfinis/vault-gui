@@ -41,7 +41,7 @@ const SecretView: Component = () => {
                                                 key === 'description' ||
                                                 key === 'username'
                                             }
-                                            fallback={value.replace(/./g, '*')}
+                                            fallback="********"
                                         >
                                             {value}
                                         </Show>
