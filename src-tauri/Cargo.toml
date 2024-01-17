@@ -1,6 +1,6 @@
 [package]
 name = "vault-gui"
-version = "1.0.0"
+version = "0.1.0"
 description = "A Tauri App for using Hashicorps Vault"
 authors = ["c0rydoras", "Gian Klug <gian.klug@adfinis.com>"]
 license = "MIT"
