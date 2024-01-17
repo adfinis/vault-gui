@@ -1,4 +1,4 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/c0rydoras/vault-gui/pull/73 -->
+<!-- Improved compatibility of back to top link -->
 <a name="readme-top"></a>
 
 
@@ -22,12 +22,12 @@
   <p align="center">
     GUI for Vault KV2 stores made with solid.js and tauri
     <br />
-    <a href="https://github.com/c0rydoras/vault-gui/releases"><strong>Download »</strong></a>
+    <a href="https://github.com/adfinis/vault-gui/releases"><strong>Download »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/c0rydoras/vault-gui/issues">Report Bug</a>
+    <a href="https://github.com/adfinis/vault-gui/issues">Report Bug</a>
     ·
-    <a href="https://github.com/c0rydoras/vault-gui/issues">Request Feature</a>
+    <a href="https://github.com/adfinis/vault-gui/issues">Request Feature</a>
   </p>
 </div>
 
@@ -64,7 +64,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![vault-gui Screenshot][product-screenshot]](https://github.com/c0rydoras/vault-gui)
+[![vault-gui Screenshot][product-screenshot]](https://github.com/adfinis/vault-gui)
 
 This project aims to provide a simple desktop app to perform CRUD operations on a Hashicorp vault instances, focussed on KV2 engines.
 
@@ -96,13 +96,13 @@ There are a lot more features planned for the future!
 ## Getting Started
 
 ### Downloading
-You can find the latest version on the [releases](https://github.com/c0rydoras/vault-gui/releases) page.
+You can find the latest version on the [releases](https://github.com/adfinis/vault-gui/releases) page.
 
 ### Local development
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/c0rydoras/vault-gui
+   git clone https://github.com/adfinis/vault-gui
    ```
 2. Install NPM packages
    ```sh
@@ -147,7 +147,7 @@ Soon to follow.
     - [ ] Approle
     - [ ] AWS
 
-See the [open issues](https://github.com/c0rydoras/vault-gui/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/adfinis/vault-gui/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -185,7 +185,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Adfinis - [https://adfinis.com](https://adfinis.com) - support@adfinis.com
 
-Project Link: [https://github.com/c0rydoras/vault-gui](https://github.com/c0rydoras/vault-gui)
+Project Link: [https://github.com/adfinis/vault-gui](https://github.com/adfinis/vault-gui)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -207,16 +207,16 @@ Use this space to list resources you find helpful and would like to give credit 
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/c0rydoras/vault-gui.svg?style=for-the-badge
-[contributors-url]: https://github.com/c0rydoras/vault-gui/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/c0rydoras/vault-gui.svg?style=for-the-badge
-[forks-url]: https://github.com/c0rydoras/vault-gui/network/members
-[stars-shield]: https://img.shields.io/github/stars/c0rydoras/vault-gui.svg?style=for-the-badge
-[stars-url]: https://github.com/c0rydoras/vault-gui/stargazers
-[issues-shield]: https://img.shields.io/github/issues/c0rydoras/vault-gui.svg?style=for-the-badge
-[issues-url]: https://github.com/c0rydoras/vault-gui/issues
-[license-shield]: https://img.shields.io/github/license/c0rydoras/vault-gui.svg?style=for-the-badge
-[license-url]: https://github.com/c0rydoras/vault-gui/blob/main/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/adfinis/vault-gui.svg?style=for-the-badge
+[contributors-url]: https://github.com/adfinis/vault-gui/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/adfinis/vault-gui.svg?style=for-the-badge
+[forks-url]: https://github.com/adfinis/vault-gui/network/members
+[stars-shield]: https://img.shields.io/github/stars/adfinis/vault-gui.svg?style=for-the-badge
+[stars-url]: https://github.com/adfinis/vault-gui/stargazers
+[issues-shield]: https://img.shields.io/github/issues/adfinis/vault-gui.svg?style=for-the-badge
+[issues-url]: https://github.com/adfinis/vault-gui/issues
+[license-shield]: https://img.shields.io/github/license/adfinis/vault-gui.svg?style=for-the-badge
+[license-url]: https://github.com/adfinis/vault-gui/blob/main/LICENSE
 [product-screenshot]: https://placehold.co/600x400
 [Tauri]: https://img.shields.io/badge/tauri-%2324C8DB.svg?style=for-the-badge&logo=tauri&logoColor=%23FFFFFF
 [Tauri-url]: https://tauri.app/
