@@ -1,5 +1,5 @@
 name: Release
-on: 
+on:
   workflow_dispatch:
 
 env:
@@ -7,11 +7,12 @@ env:
 
 jobs:
   release:
+    permissions: write-all
     strategy:
       fail-fast: false
       matrix:
         platform: [macos-latest, ubuntu-latest, windows-latest]
-        
+
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Checkout 🛎️
@@ -22,7 +23,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y webkit2gtk-4.0
-          
+
       - name: Setup PNPM
         uses: pnpm/action-setup@v2
         with:
@@ -33,16 +34,16 @@ jobs:
         with:
           node-version: latest
           cache: 'pnpm'
-          
+
       - name: Rust setup
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           profile: minimal
-          
+
       - name: Install dependencies
         run: pnpm install
-          
+
       - name: Build 🔧
         uses: tauri-apps/tauri-action@v0
         env:
