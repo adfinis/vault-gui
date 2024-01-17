@@ -8,7 +8,6 @@ import {
 } from 'solid-heroicons/outline';
 import { createSignal, For, JSXElement, Show, type Component } from 'solid-js';
 import Item from './Item';
-import { setState } from './state';
 
 type NodeProps = {
     icon: { path: JSXElement; outline: boolean; mini: boolean };
@@ -45,15 +44,7 @@ const Node: Component<NodeProps> = (props) => {
 
     return (
         <div>
-            <div
-                onClick={() =>
-                    setState({
-                        page: props.path.endsWith('/') || !props.path ? 'list' : 'view',
-                        kv: props.kv,
-                        path: props.path,
-                    })
-                }
-            >
+            <div>
                 <Show when={props.path.endsWith('/') || props.path === ''}>
                     <button class="inline-block" onClick={listPath}>
                         <Icon path={chevron()} class="inline h-[1em]" />
