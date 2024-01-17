@@ -77,7 +77,7 @@ const App: Component = () => {
             </header>
             <div class="flex">
                 <div
-                    class="w-1/3 resize-x overflow-auto border-r bg-neutral-100 pl-2"
+                    class="w-1/3 select-none resize-x overflow-auto overflow-x-scroll whitespace-nowrap border-r bg-neutral-100 pl-2"
                     classList={{ hidden: state.page === 'login' }}
                 >
                     <div class="mt-4">
