@@ -21,12 +21,11 @@ const Node: Component<NodeProps> = (props) => {
     const [children, setChildren] = createSignal([]);
     const [expanded, setExpanded] = createSignal(false);
 
-    const chevron = () =>
-        props.path.endsWith('/') || props.path === '' ? chevronDown : chevronRight;
+    const chevron = () => (expanded() ? chevronDown : chevronRight);
 
     const listPath = async () => {
         setExpanded((v) => !v);
-        if (expanded()) return;
+        if (!expanded()) return;
 
         const response: string[] = await invoke('list_path', {
             mount: props.kv,
