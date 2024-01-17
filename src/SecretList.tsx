@@ -1,5 +1,5 @@
 import { document as documentIcon, folder } from 'solid-heroicons/outline';
-import { createResource, createSignal, For, Show, type Component } from 'solid-js';
+import { createEffect, createResource, createSignal, For, Show, type Component } from 'solid-js';
 import Item from './Item';
 import { fetchPaths } from './utils';
 import { state } from './state';
@@ -10,7 +10,17 @@ const ListView: Component = () => {
         fetchPaths,
     );
 
+
+
     const [search, setSearch] = createSignal('');
+
+
+    // Cler the filter field on path change
+    createEffect(() => {
+        if (state.path) {
+            setSearch('');
+        }
+    });
 
     return (
         <div class="p-5">
