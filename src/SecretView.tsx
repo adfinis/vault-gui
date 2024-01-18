@@ -26,42 +26,44 @@ const SecretView: Component = () => {
                 </thead>
                 <tbody>
                     <Show when={secrets()} fallback={<strong>Loading...</strong>}>
-                        <For each={Object.entries(secrets())}>
-                            {([key, value]) => (
-                                <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
-                                    <th
-                                        scope="row"
-                                        class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
-                                    >
-                                        {key}
-                                    </th>
-                                    <td class="px-6 py-4">
-                                        <Show
-                                            when={
-                                                key === 'description' ||
-                                                key === 'username'
-                                            }
-                                            fallback="********"
+                        {(secrets) => (
+                            <For each={Object.entries(secrets())}>
+                                {([key, value]) => (
+                                    <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                                        <th
+                                            scope="row"
+                                            class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                                         >
-                                            {value}
-                                        </Show>
-                                    </td>
-                                    <td class="px-6 py-4 text-right">
-                                        <a
-                                            class="cursor-pointer font-medium text-blue-600 hover:underline dark:text-blue-500"
-                                            onClick={() => {
-                                                writeText(value);
-                                                toast.success(
-                                                    `Copied ${key} for ${state.path} to clipboard`,
-                                                );
-                                            }}
-                                        >
-                                            Copy
-                                        </a>
-                                    </td>
-                                </tr>
-                            )}
-                        </For>
+                                            {key}
+                                        </th>
+                                        <td class="px-6 py-4">
+                                            <Show
+                                                when={
+                                                    key === 'description' ||
+                                                    key === 'username'
+                                                }
+                                                fallback="********"
+                                            >
+                                                {value}
+                                            </Show>
+                                        </td>
+                                        <td class="px-6 py-4 text-right">
+                                            <a
+                                                class="cursor-pointer font-medium text-blue-600 hover:underline dark:text-blue-500"
+                                                onClick={() => {
+                                                    writeText(value);
+                                                    toast.success(
+                                                        `Copied ${key} for ${state.path} to clipboard`,
+                                                    );
+                                                }}
+                                            >
+                                                Copy
+                                            </a>
+                                        </td>
+                                    </tr>
+                                )}
+                            </For>
+                        )}
                     </Show>
                 </tbody>
             </table>

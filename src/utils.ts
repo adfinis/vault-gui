@@ -13,14 +13,14 @@ const fetchPaths = async ({
 }: {
     mount: string;
     path: string;
-}): Promise<string[] | null> => {
+}): Promise<string[] | undefined> => {
     try {
         return await invoke('list_path', {
             mount,
             path,
         });
     } catch (e) {
-        toast.error(e);
+        toast.error(`${e}`);
     }
 };
 
@@ -30,22 +30,22 @@ const fetchSecret = async ({
 }: {
     mount: string;
     path: string;
-}): Promise<Record<string, string> | null> => {
+}): Promise<Record<string, string> | undefined> => {
     try {
         return await invoke('get_secret', {
             mount,
             path,
         });
     } catch (e) {
-        toast.error(e);
+        toast.error(`${e}`);
     }
 };
 
-const fetchKVS = async (): Promise<string[] | null> => {
+const fetchKVS = async (): Promise<string[] | undefined> => {
     try {
         return await invoke('list_kvs');
     } catch (e) {
-        toast.error(e);
+        toast.error(`${e}`);
     }
 };
 

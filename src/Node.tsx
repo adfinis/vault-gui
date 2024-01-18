@@ -13,11 +13,10 @@ type NodeProps = {
     icon: { path: JSXElement; outline: boolean; mini: boolean };
     kv: string;
     path: string;
-    displaySecret?: (path: string, kv: string) => void;
 };
 
 const Node: Component<NodeProps> = (props) => {
-    const [children, setChildren] = createSignal([]);
+    const [children, setChildren] = createSignal<NodeProps[]>([]);
     const [expanded, setExpanded] = createSignal(false);
 
     const chevron = () => (expanded() ? chevronDown : chevronRight);
@@ -53,11 +52,9 @@ const Node: Component<NodeProps> = (props) => {
                 <Item {...props} />
             </div>
             <div class="pl-4">
-                <Show when={expanded()}>
+                <Show when={expanded() && children()}>
                     <div>
-                        <For each={children()}>
-                            {(child) => <Node class="ml-10" {...child} />}
-                        </For>
+                        <For each={children()}>{(child) => <Node {...child} />}</For>
                     </div>
                 </Show>
             </div>

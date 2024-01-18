@@ -29,7 +29,7 @@ const Item: Component<ItemProps> = (props) => {
             >
                 <Show
                     when={props.path === ''}
-                    fallback={splitPath(props.path).at(-1).replace('/', '')}
+                    fallback={splitPath(props.path).at(-1)?.replace('/', '')}
                 >
                     <span
                         classList={{

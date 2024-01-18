@@ -1,4 +1,3 @@
-import { invoke } from '@tauri-apps/api/tauri';
 import { Icon } from 'solid-heroicons';
 import { lockClosed, magnifyingGlass } from 'solid-heroicons/outline';
 import { createEffect, createResource, For, Show, type Component } from 'solid-js';
@@ -11,16 +10,9 @@ import Search from './Search';
 import SearchIndex from './SearchIndex';
 import SecretList from './SecretList';
 import SecretView from './SecretView';
-import { Toaster, toast } from 'solid-toast';
+import { Toaster } from 'solid-toast';
 import { setState, state } from './state';
-
-const listKVS = async (): Promise<null | string[]> => {
-    try {
-        return await invoke('list_kvs');
-    } catch (e) {
-        toast.error(e);
-    }
-};
+import { fetchKVS } from './utils';
 
 const Home = () => <strong>Select a KV to get started</strong>;
 
@@ -34,7 +26,7 @@ const pageMap: { [key: string]: Component } = {
 };
 
 const App: Component = () => {
-    const [kvs, { refetch }] = createResource(listKVS);
+    const [kvs, { refetch }] = createResource(fetchKVS);
 
     createEffect(() => {
         if (state.page === 'home') refetch();
@@ -85,9 +77,11 @@ const App: Component = () => {
                             <strong>Loading...</strong>
                         )}
                         <Show when={state.page !== 'login' && kvs()}>
-                            <For each={kvs().sort()}>
-                                {(kv) => <Node kv={kv} path="" icon={lockClosed} />}
-                            </For>
+                            {(kvs) => (
+                                <For each={kvs().sort()}>
+                                    {(kv) => <Node kv={kv} path="" icon={lockClosed} />}
+                                </For>
+                            )}
                         </Show>
                     </div>
                 </div>

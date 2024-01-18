@@ -1,5 +1,6 @@
 import { createSignal, type Component } from 'solid-js';
 import { fetchKVS, fetchPaths } from './utils';
+import toast from 'solid-toast';
 
 const SearchIndex: Component = () => {
     const [progress, setProgress] = createSignal(0);
@@ -31,8 +32,12 @@ const SearchIndex: Component = () => {
     };
 
     const createSearchIndex = async () => {
-        const searchIndex = {};
+        const searchIndex: Record<string, string[]> = {};
         const kvs = await fetchKVS();
+        if (!kvs) {
+            toast.error('Unable to create search index.');
+            return;
+        }
         let totalPaths = 0;
         setMaxProgress(kvs.length);
         for await (const kv of kvs) {
