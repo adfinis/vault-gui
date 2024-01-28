@@ -1,11 +1,6 @@
 import { createSignal, For, Show, type Component } from 'solid-js';
 import SearchResult from './SearchResult';
 import { setState } from './state';
-import toast from 'solid-toast';
-
-type SearchIndexType = {
-    [key: string]: string[];
-};
 
 interface SearchResult {
     kv: string;
@@ -16,18 +11,12 @@ const Search: Component = () => {
     const [search, setSearch] = createSignal('');
     const [searchResults, setSearchResults] = createSignal<SearchResult[]>([]);
     const searchIndexRaw = localStorage.getItem('searchIndex');
-    const searchIndex = (): SearchIndexType => {
-        try {
-            return JSON.parse(searchIndexRaw) as SearchIndexType;
-        } catch (e) {
-            toast.error(e);
-            return {};
-        }
-    };
     const runSearch = () => {
         console.log(`searching for ${search()}`);
         const searchTerm = search();
-        const results = Object.entries(searchIndex()).flatMap(([kv, paths]) =>
+        const results = Object.entries(
+            JSON.parse(searchIndexRaw ?? '{}') as Record<string, string[]>,
+        ).flatMap(([kv, paths]) =>
             paths
                 .filter((path) => path.includes(searchTerm))
                 .map((path) => ({ kv, path })),

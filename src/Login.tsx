@@ -6,12 +6,10 @@ import { setState } from './state';
 const Login: Component = () => {
     const oidcAuth = async (): Promise<void> => {
         try {
-            console.log(
-                await invoke('oidc_auth', { address: oidcURL(), mount: 'oidc' }),
-            );
-            setState('page', 'home');
+            await invoke('oidc_auth', { address: oidcURL(), mount: 'oidc' }),
+                setState('page', 'home');
         } catch (e) {
-            toast.error(e);
+            toast.error(`${e}`);
         }
     };
 
