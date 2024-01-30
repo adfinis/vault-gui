@@ -8,6 +8,9 @@ dependencies:
   '@solid-primitives/local-store':
     specifier: ^1.1.4
     version: 1.1.4(solid-js@1.8.15)
+  '@tanstack/solid-query':
+    specifier: ^5.18.0
+    version: 5.28.0(solid-js@1.8.15)
   '@tauri-apps/api':
     specifier: 1.5.3
     version: 1.5.3
@@ -799,6 +802,19 @@ packages:
     peerDependencies:
       solid-js: ^1.0.7
     dependencies:
+      solid-js: 1.8.15
+    dev: false
+
+  /@tanstack/query-core@5.28.0:
+    resolution: {integrity: sha512-BfltXqnoIAXTCFrQCu40M3Ch7odQ6IJraTy0t8n12jAwXMYKIgDwOBWTqkSUYD+vxMi8Ag0+9F8lw9wZKhi2Yg==}
+    dev: false
+
+  /@tanstack/solid-query@5.28.0(solid-js@1.8.15):
+    resolution: {integrity: sha512-Cgmbr5BucO0geTqVLTPxTG/AzGFXD5pO5wa7HKj42jj9L+A5tJrP/TPY08Y4ZvRhEBdoph672t9xc5j67svJIg==}
+    peerDependencies:
+      solid-js: ^1.6.0
+    dependencies:
+      '@tanstack/query-core': 5.28.0
       solid-js: 1.8.15
     dev: false
 

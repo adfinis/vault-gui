@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "@solid-primitives/local-store": "^1.1.4",
+    "@tanstack/solid-query": "^5.18.0",
     "@tauri-apps/api": "1.5.3",
     "@tauri-apps/cli": "1.5.11",
     "solid-heroicons": "^3.2.4",
