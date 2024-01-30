@@ -28,6 +28,9 @@ dependencies:
     version: 0.5.0(solid-js@1.8.15)
 
 devDependencies:
+  '@tanstack/solid-query-devtools':
+    specifier: ^5.18.0
+    version: 5.28.0(@tanstack/solid-query@5.28.0)(solid-js@1.8.15)
   '@types/node':
     specifier: 20.11.25
     version: 20.11.25
@@ -807,7 +810,21 @@ packages:
 
   /@tanstack/query-core@5.28.0:
     resolution: {integrity: sha512-BfltXqnoIAXTCFrQCu40M3Ch7odQ6IJraTy0t8n12jAwXMYKIgDwOBWTqkSUYD+vxMi8Ag0+9F8lw9wZKhi2Yg==}
-    dev: false
+
+  /@tanstack/query-devtools@5.27.8:
+    resolution: {integrity: sha512-K94gnqvEe6TsDvi8eZYP2JrnQJOIymhVXRR+Xa0xcsryNqG+PeMIDmQQqjwIqbDq36qyUlPAyT6LxXVvVv1Nyw==}
+    dev: true
+
+  /@tanstack/solid-query-devtools@5.28.0(@tanstack/solid-query@5.28.0)(solid-js@1.8.15):
+    resolution: {integrity: sha512-TExzPjpPRuTdBBLxGMVUpzUkwm6qEjD0iMp/RQ1Xt8cuvqEEHDBXqofeKh1JwbMBJZj067PbKOwxnsy9U7988A==}
+    peerDependencies:
+      '@tanstack/solid-query': ^5.28.0
+      solid-js: ^1.8.14
+    dependencies:
+      '@tanstack/query-devtools': 5.27.8
+      '@tanstack/solid-query': 5.28.0(solid-js@1.8.15)
+      solid-js: 1.8.15
+    dev: true
 
   /@tanstack/solid-query@5.28.0(solid-js@1.8.15):
     resolution: {integrity: sha512-Cgmbr5BucO0geTqVLTPxTG/AzGFXD5pO5wa7HKj42jj9L+A5tJrP/TPY08Y4ZvRhEBdoph672t9xc5j67svJIg==}
@@ -816,7 +833,6 @@ packages:
     dependencies:
       '@tanstack/query-core': 5.28.0
       solid-js: 1.8.15
-    dev: false
 
   /@tauri-apps/api@1.5.3:
     resolution: {integrity: sha512-zxnDjHHKjOsrIzZm6nO5Xapb/BxqUq1tc7cGkFXsFkGTsSWgCPH1D8mm0XS9weJY2OaR73I3k3S+b7eSzJDfqA==}
