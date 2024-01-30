@@ -1,21 +1,18 @@
 import { document as documentIcon, folder } from 'solid-heroicons/outline';
-import {
-    createEffect,
-    createResource,
-    createSignal,
-    For,
-    Show,
-    type Component,
-} from 'solid-js';
+import { createEffect, createSignal, For, Show, type Component } from 'solid-js';
 import Item from './Item';
 import { fetchPaths } from './utils';
 import { state } from './state';
+import { createQuery } from '@tanstack/solid-query';
+import { toSorted } from './utils';
 
 const ListView: Component = () => {
-    const [secrets] = createResource(
-        () => ({ mount: state.kv, path: state.path }),
-        fetchPaths,
-    );
+    console.log(state.path);
+    const query = createQuery(() => ({
+        queryKey: ['paths', state.kv, state.path],
+        queryFn: () => fetchPaths({ mount: state.kv, path: state.path }),
+        enabled: !state.path || state.path.endsWith('/'),
+    }));
 
     const [search, setSearch] = createSignal('');
 
@@ -35,9 +32,14 @@ const ListView: Component = () => {
                 onInput={(e) => setSearch(e.currentTarget.value)}
                 placeholder="Filter results..."
             />
-            {secrets.loading && <strong>Loading...</strong>}
-            <Show when={secrets()}>
-                <For each={secrets()}>
+            <Show when={query.isPending}>
+                <strong>loading...</strong>
+            </Show>
+            <Show when={query.isError}>
+                <strong>{query.error.toString()}</strong>
+            </Show>
+            <Show when={query.isSuccess}>
+                <For each={toSorted(query.data)}>
                     {(item) => (
                         <div>
                             <Show when={item.includes(search()) || search() === ''}>

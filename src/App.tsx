@@ -1,6 +1,6 @@
 import { Icon } from 'solid-heroicons';
 import { lockClosed, magnifyingGlass } from 'solid-heroicons/outline';
-import { createEffect, createResource, For, Show, type Component } from 'solid-js';
+import { For, Show, type Component } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import vault from './assets/vault-logo.svg';
 import Breadcrumbs from './Breadcrumbs';
@@ -10,9 +10,9 @@ import Search from './Search';
 import SearchIndex from './SearchIndex';
 import SecretList from './SecretList';
 import SecretView from './SecretView';
-import { Toaster } from 'solid-toast';
 import { setState, state } from './state';
-import { fetchKVS } from './utils';
+import { fetchKVS, toSorted } from './utils';
+import { createQuery } from '@tanstack/solid-query';
 
 const Home = () => <strong>Select a KV to get started</strong>;
 
@@ -26,11 +26,11 @@ const pageMap: { [key: string]: Component } = {
 };
 
 const App: Component = () => {
-    const [kvs, { refetch }] = createResource(fetchKVS);
-
-    createEffect(() => {
-        if (state.page === 'home') refetch();
-    });
+    const kvsQuery = createQuery(() => ({
+        queryKey: ['kvs'],
+        queryFn: fetchKVS,
+        enabled: state.page !== 'login',
+    }));
 
     return (
         <>
@@ -73,11 +73,11 @@ const App: Component = () => {
                     classList={{ hidden: state.page === 'login' }}
                 >
                     <div class="mt-4">
-                        {state.page !== 'login' && kvs.loading && (
+                        <Show when={kvsQuery.isPending}>
                             <strong>Loading...</strong>
-                        )}
-                        <Show when={state.page !== 'login' && kvs()}>
-                            <For each={kvs().sort()}>
+                        </Show>
+                        <Show when={kvsQuery.isSuccess}>
+                            <For each={toSorted(kvsQuery.data)}>
                                 {(kv) => <Node kv={kv} path="" icon={lockClosed} />}
                             </For>
                         </Show>
@@ -89,7 +89,6 @@ const App: Component = () => {
                     </h1>
                     <Dynamic component={pageMap[state.page]} />
                 </main>
-                <Toaster position="bottom-right" />
             </div>
         </>
     );

@@ -1,14 +1,15 @@
 import { writeText } from '@tauri-apps/api/clipboard';
-import { createResource, For, Show, type Component } from 'solid-js';
+import { For, Show, type Component } from 'solid-js';
 import toast from 'solid-toast';
 import { fetchSecret } from './utils';
 import { state } from './state';
+import { createQuery } from '@tanstack/solid-query';
 
 const SecretView: Component = () => {
-    const [secrets] = createResource(
-        () => ({ mount: state.kv, path: state.path }),
-        fetchSecret,
-    );
+    const query = createQuery(() => ({
+        queryKey: ['paths', state.kv, state.path],
+        queryFn: () => fetchSecret({ mount: state.kv, path: state.path }),
+    }));
 
     return (
         <div>
@@ -25,8 +26,14 @@ const SecretView: Component = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <Show when={secrets()} fallback={<strong>Loading...</strong>}>
-                        <For each={Object.entries(secrets())}>
+                    <Show when={query.isPending}>
+                        <strong>loading...</strong>
+                    </Show>
+                    <Show when={query.isError}>
+                        <strong>{query.error.toString()}</strong>
+                    </Show>
+                    <Show when={query.isSuccess}>
+                        <For each={Object.entries(query.data)}>
                             {([key, value]) => (
                                 <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
                                     <th
