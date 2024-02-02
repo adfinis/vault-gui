@@ -1,15 +1,30 @@
-import { For, Show } from 'solid-js';
+import { For, Show, createSignal } from 'solid-js';
 import { setState, state } from './state';
 import { splitPath } from './utils';
-import { useQueryClient } from '@tanstack/solid-query';
+import { createQuery, useQueryClient } from '@tanstack/solid-query';
+import { Icon } from 'solid-heroicons';
+import { arrowPath } from 'solid-heroicons/outline';
 
 const Breadcrumbs = () => {
+    const [spinning, setSpinning] = createSignal(false);
     const queryClient = useQueryClient();
     const handleClick = (segment: string) => {
         const path = splitPath(state.path)
             .slice(0, splitPath(state.path).indexOf(segment) + 1)
             .join('');
         setState({ page: 'list', path });
+    };
+
+    const queryKey = () => (state.kv ? ['paths', state.kv, state.path] : ['kvs']);
+    const query = createQuery(() => ({
+        queryKey: queryKey(),
+        enabled: false,
+    }));
+
+    const refresh = async () => {
+        setSpinning(true);
+        await queryClient.refetchQueries({ queryKey: queryKey() });
+        setSpinning(false);
     };
 
     return (
@@ -32,18 +47,14 @@ const Breadcrumbs = () => {
                 </div>
                 <Show when={state.page !== 'login'}>
                     <button
-                        class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        onClick={() =>
-                            state.kv
-                                ? queryClient.refetchQueries({
-                                      queryKey: ['paths', state.kv, state.path],
-                                  })
-                                : queryClient.refetchQueries({
-                                      queryKey: ['kvs'],
-                                  })
-                        }
+                        class="disabled:text-slate-900"
+                        classList={{
+                            'animate-[0.5s_spin_linear_infinite]': spinning(),
+                        }}
+                        disabled={query.isPending}
+                        onClick={refresh}
                     >
-                        refresh
+                        <Icon path={arrowPath} class="w-[1em]" />
                     </button>
                 </Show>
             </div>
