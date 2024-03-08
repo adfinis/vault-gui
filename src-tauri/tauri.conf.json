@@ -5,8 +5,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "VaultGUI",
-    "version": "0.1.0"
+    "productName": "vault-gui"
   },
   "tauri": {
     "allowlist": {
