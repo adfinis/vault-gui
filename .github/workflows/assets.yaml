@@ -17,7 +17,7 @@ jobs:
 
     runs-on: ${{ matrix.platform }}
     steps:
-      - name: Checkout 🛎️
+      - name: Checkout
         uses: actions/checkout@v4
 
       - uses: cardinalby/git-get-release-action@v1
@@ -80,7 +80,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build 🔧
+      - name: Build
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
