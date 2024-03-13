@@ -1,5 +1,4 @@
 import { invoke } from '@tauri-apps/api/tauri';
-import toast from 'solid-toast';
 
 const splitPath = (path: string): string[] =>
     path
@@ -13,16 +12,11 @@ const fetchPaths = async ({
 }: {
     mount: string;
     path: string;
-}): Promise<string[] | null> => {
-    try {
-        return await invoke('list_path', {
-            mount,
-            path,
-        });
-    } catch (e) {
-        toast.error(e);
-    }
-};
+}): Promise<string[] | null> =>
+    await invoke('list_path', {
+        mount,
+        path,
+    });
 
 const fetchSecret = async ({
     mount,
@@ -30,23 +24,14 @@ const fetchSecret = async ({
 }: {
     mount: string;
     path: string;
-}): Promise<Record<string, string> | null> => {
-    try {
-        return await invoke('get_secret', {
-            mount,
-            path,
-        });
-    } catch (e) {
-        toast.error(e);
-    }
-};
+}): Promise<Record<string, string> | null> =>
+    await invoke('get_secret', {
+        mount,
+        path,
+    });
 
-const fetchKVS = async (): Promise<string[] | null> => {
-    try {
-        return await invoke('list_kvs');
-    } catch (e) {
-        toast.error(e);
-    }
-};
+const fetchKVS = async (): Promise<string[] | null> => await invoke('list_kvs');
 
-export { splitPath, fetchPaths, fetchSecret, fetchKVS };
+const toSorted = <T>(array: Array<T>): Array<T> => [...array].sort();
+
+export { splitPath, fetchPaths, fetchSecret, fetchKVS, toSorted };
