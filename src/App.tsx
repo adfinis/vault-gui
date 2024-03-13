@@ -1,35 +1,19 @@
 import { Icon } from 'solid-heroicons';
 import { lockClosed, magnifyingGlass } from 'solid-heroicons/outline';
-import { For, Show, type Component } from 'solid-js';
-import { Dynamic } from 'solid-js/web';
+import { For, ParentComponent, Show } from 'solid-js';
 import vault from './assets/vault-logo.svg';
 import Breadcrumbs from './Breadcrumbs';
-import Login from './Login';
 import Node from './Node';
-import Search from './Search';
-import SearchIndex from './SearchIndex';
-import SecretList from './SecretList';
-import SecretView from './SecretView';
-import { setState, state } from './state';
+import { state } from './state';
 import { fetchKVS, toSorted } from './utils';
 import { createQuery } from '@tanstack/solid-query';
+import { A } from '@solidjs/router';
 
-const Home = () => <strong>Select a KV to get started</strong>;
-
-const pageMap: { [key: string]: Component } = {
-    home: Home,
-    login: Login,
-    view: SecretView,
-    list: SecretList,
-    searchIndex: SearchIndex,
-    search: Search,
-};
-
-const App: Component = () => {
+const App: ParentComponent = (props) => {
     const kvsQuery = createQuery(() => ({
         queryKey: ['kvs'],
         queryFn: fetchKVS,
-        enabled: state.page !== 'login',
+        enabled: state.authenticated,
     }));
 
     return (
@@ -45,23 +29,16 @@ const App: Component = () => {
                             <span class="inline-block font-bold text-white">Vault</span>
                         </a>
                         <nav class="flex items-center space-x-6 text-sm font-medium">
-                            <Show when={state.page !== 'login'}>
-                                <a
+                            <Show when={state.authenticated}>
+                                <A
                                     class="text-foreground/60 hover:text-foreground/80 no-underline transition-colors lg:block"
-                                    href="#"
-                                    onClick={() =>
-                                        setState({
-                                            page: 'search',
-                                            kv: 'Search',
-                                            path: '',
-                                        })
-                                    }
+                                    href="/search"
                                 >
                                     <Icon
                                         path={magnifyingGlass}
                                         class="h-5 w-5 text-white"
                                     />
-                                </a>
+                                </A>
                             </Show>
                         </nav>
                     </div>
@@ -70,7 +47,7 @@ const App: Component = () => {
             <div class="flex">
                 <div
                     class="w-1/3 select-none resize-x overflow-auto overflow-x-scroll whitespace-nowrap border-r bg-neutral-100 pl-2"
-                    classList={{ hidden: state.page === 'login' }}
+                    classList={{ hidden: !state.authenticated }}
                 >
                     <div class="mt-4">
                         <Show when={kvsQuery.isPending}>
@@ -87,7 +64,7 @@ const App: Component = () => {
                     <h1 class="text-xl font-bold">
                         <Breadcrumbs />
                     </h1>
-                    <Dynamic component={pageMap[state.page]} />
+                    {props.children}
                 </main>
             </div>
         </>

@@ -1,7 +1,7 @@
 import { createSignal, For, Show, type Component } from 'solid-js';
 import SearchResult from './SearchResult';
-import { setState } from './state';
 import toast from 'solid-toast';
+import { A } from '@solidjs/router';
 
 type SearchIndexType = {
     [key: string]: string[];
@@ -65,13 +65,9 @@ const Search: Component = () => {
                 <Show when={searchResults().length === 0}>
                     <span>
                         No results? Try creating a{' '}
-                        <a
-                            href="#"
-                            onClick={() => setState('page', 'searchIndex')}
-                            class="font-bold underline"
-                        >
+                        <A href="/search-index" class="font-bold underline">
                             search index
-                        </a>
+                        </A>
                     </span>
                 </Show>
             </div>

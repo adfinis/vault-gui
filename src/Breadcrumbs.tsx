@@ -4,6 +4,7 @@ import { splitPath } from './utils';
 import { createQuery, useQueryClient } from '@tanstack/solid-query';
 import { Icon } from 'solid-heroicons';
 import { arrowPath } from 'solid-heroicons/outline';
+import { A } from '@solidjs/router';
 
 const Breadcrumbs = () => {
     const [spinning, setSpinning] = createSignal(false);
@@ -12,7 +13,7 @@ const Breadcrumbs = () => {
         const path = splitPath(state.path)
             .slice(0, splitPath(state.path).indexOf(segment) + 1)
             .join('');
-        setState({ page: 'list', path });
+        setState({ path });
     };
 
     const queryKey = () => (state.kv ? ['paths', state.kv, state.path] : ['kvs']);
@@ -31,9 +32,9 @@ const Breadcrumbs = () => {
         <>
             <div class="flex py-2">
                 <div class="w-full">
-                    <span onClick={() => setState({ page: 'list', path: '' })}>
+                    <A href="/list" onClick={() => setState('path', '')}>
                         {state.kv}
-                    </span>
+                    </A>
                     <For each={splitPath(state.path)}>
                         {(segment) => (
                             <span
@@ -45,7 +46,7 @@ const Breadcrumbs = () => {
                         )}
                     </For>
                 </div>
-                <Show when={state.page !== 'login'}>
+                <Show when={state.authenticated}>
                     <button
                         class="disabled:text-slate-900"
                         classList={{

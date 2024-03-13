@@ -1,6 +1,5 @@
 import { type Component } from 'solid-js';
-import { setState } from './state';
-import { Page } from './shared';
+import { A } from '@solidjs/router';
 
 type SearchResultProps = {
     kv: string;
@@ -8,23 +7,14 @@ type SearchResultProps = {
 };
 
 const SearchResult: Component<SearchResultProps> = (props) => {
-    const handleClick = () => {
-        let page: Page = 'list';
-        if (!props.path.endsWith('/') && props.path !== '') {
-            page = 'view';
-        }
-        setState({ page, kv: props.kv, path: props.path });
-    };
+    const href = () => (props.path && props.path.endsWith('/') ? '/view' : '/list');
 
     return (
         <div class="border-b-1 p-4">
-            <span
-                onClick={handleClick}
-                class="cursor-pointer font-bold hover:underline"
-            >
+            <A href={href()} class="cursor-pointer font-bold hover:underline">
                 {props.kv}
                 {props.path}
-            </span>
+            </A>
         </div>
     );
 };
