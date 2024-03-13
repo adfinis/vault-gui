@@ -8,6 +8,9 @@ dependencies:
   '@solid-primitives/local-store':
     specifier: ^1.1.4
     version: 1.1.4(solid-js@1.8.15)
+  '@solidjs/router':
+    specifier: ^0.13.0
+    version: 0.13.0(solid-js@1.8.15)
   '@tanstack/solid-query':
     specifier: ^5.18.0
     version: 5.28.0(solid-js@1.8.15)
@@ -804,6 +807,14 @@ packages:
     resolution: {integrity: sha512-sjje0IdTNZ4bKN9c16Rw03QOAbgkk2UVYcqyvyP52xyORvN9VSWXQxUY9nxnxlJR7GCn5VfDZWfXMrqexnix1Q==}
     peerDependencies:
       solid-js: ^1.0.7
+    dependencies:
+      solid-js: 1.8.15
+    dev: false
+
+  /@solidjs/router@0.13.0(solid-js@1.8.15):
+    resolution: {integrity: sha512-YHLbFv9J53+iG4yVrh0vVdYiyXPTk892UyZ1jiMPsUXn2dYkX4552N+8SjvlKWWsmNmYxaoefM6jZn1YtVIUUg==}
+    peerDependencies:
+      solid-js: ^1.8.6
     dependencies:
       solid-js: 1.8.15
     dev: false
