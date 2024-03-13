@@ -1,19 +1,24 @@
 import { invoke } from '@tauri-apps/api/tauri';
-import { type Component } from 'solid-js';
+import { onMount, type Component } from 'solid-js';
 import toast from 'solid-toast';
 import { setState } from './state';
+import { useNavigate } from '@solidjs/router';
 
 const Login: Component = () => {
+    const navigate = useNavigate();
     const oidcAuth = async (): Promise<void> => {
         try {
             console.log(
                 await invoke('oidc_auth', { address: oidcURL(), mount: 'oidc' }),
             );
-            setState('page', 'home');
+            setState('authenticated', true);
+            navigate('/home', { replace: true });
         } catch (e) {
             toast.error(e);
         }
     };
+
+    onMount(() => setState('authenticated', false));
 
     const oidcURL = () => localStorage.getItem('oidc_url') ?? '';
     const setOidcURL = (v: string) => localStorage.setItem('oidc_url', v);

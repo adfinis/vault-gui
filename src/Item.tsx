@@ -2,6 +2,7 @@ import { Icon } from 'solid-heroicons';
 import { JSXElement, Show, type Component } from 'solid-js';
 import { setState, state } from './state';
 import { splitPath } from './utils';
+import { A } from '@solidjs/router';
 
 type ItemProps = {
     icon: { path: JSXElement; outline: boolean; mini: boolean };
@@ -11,10 +12,10 @@ type ItemProps = {
 
 const Item: Component<ItemProps> = (props) => {
     return (
-        <span
+        <A
+            href={props.path.endsWith('/') || !props.path ? '/list' : '/view'}
             onClick={() =>
                 setState({
-                    page: props.path.endsWith('/') || !props.path ? 'list' : 'view',
                     path: props.path,
                     kv: props.kv,
                 })
@@ -40,7 +41,7 @@ const Item: Component<ItemProps> = (props) => {
                     </span>
                 </Show>
             </span>
-        </span>
+        </A>
     );
 };
 

@@ -1,12 +1,15 @@
 import { createStore } from 'solid-js/store';
-import { Page } from './shared';
 
 type State = {
-    page: Page;
     kv: string;
     path: string;
+    authenticated: boolean;
 };
 
-const [state, setState] = createStore<State>({ page: 'login', kv: '', path: '' });
+const [state, setState] = createStore<State>({
+    kv: '',
+    path: '',
+    authenticated: false,
+});
 
 export { state, setState };
