@@ -13,7 +13,7 @@ source=("https://github.com/adfinis/vault-gui/releases/download/v${pkgver}/vault
 makedepends=('binutils' 'tar')
 provides=("vault-gui=${pkgver}")
 conflicts=('vault-gui-git')
-b2sums=('SKIP')
+sha256sums=('SKIP')
 
 prepare() {
 	ar p vault-gui_${pkgver}_amd64.deb data.tar.gz | tar zx
