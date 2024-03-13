@@ -4,16 +4,11 @@ import App from './App';
 import './index.css';
 
 import { Navigate, Route, Router } from '@solidjs/router';
-import Login from './Login';
 import { state } from './state';
-import SecretView from './SecretView';
-import SecretList from './SecretList';
-import SearchIndex from './SearchIndex';
-import Home from './Home';
-import Search from './Search';
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/solid-query';
 import { SolidQueryDevtools } from '@tanstack/solid-query-devtools';
 import toast, { Toaster } from 'solid-toast';
+import { Home, Login, Search, SearchIndex, SecretList, SecretView } from './pages';
 
 const queryClient = new QueryClient({
     defaultOptions: {

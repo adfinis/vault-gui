@@ -1,7 +1,7 @@
 import { Icon } from 'solid-heroicons';
 import { JSXElement, Show, type Component } from 'solid-js';
-import { setState, state } from './state';
-import { splitPath } from './utils';
+import { setState, state } from '@/state';
+import { splitPath } from '@/utils';
 import { A } from '@solidjs/router';
 
 type ItemProps = {

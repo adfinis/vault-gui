@@ -1,5 +1,5 @@
 import { createSignal, For, Show, type Component } from 'solid-js';
-import SearchResult from './SearchResult';
+import { SearchResult } from '@/components';
 import toast from 'solid-toast';
 import { A } from '@solidjs/router';
 

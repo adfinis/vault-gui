@@ -1,5 +1,5 @@
 import { createSignal, type Component } from 'solid-js';
-import { fetchKVS, fetchPaths } from './utils';
+import { fetchKVS, fetchPaths } from '@/utils';
 
 const SearchIndex: Component = () => {
     const [progress, setProgress] = createSignal(0);

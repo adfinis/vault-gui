@@ -1,10 +1,9 @@
 import { document as documentIcon, folder } from 'solid-heroicons/outline';
 import { createEffect, createSignal, For, Show, type Component } from 'solid-js';
-import Item from './Item';
-import { fetchPaths } from './utils';
-import { state } from './state';
+import { fetchPaths, toSorted } from '@/utils';
+import { state } from '@/state';
 import { createQuery } from '@tanstack/solid-query';
-import { toSorted } from './utils';
+import { Item } from '@/components';
 
 const ListView: Component = () => {
     console.log(state.path);

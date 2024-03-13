@@ -2,12 +2,11 @@ import { Icon } from 'solid-heroicons';
 import { lockClosed, magnifyingGlass } from 'solid-heroicons/outline';
 import { For, ParentComponent, Show } from 'solid-js';
 import vault from './assets/vault-logo.svg';
-import Breadcrumbs from './Breadcrumbs';
-import Node from './Node';
-import { state } from './state';
+import { setState, state } from './state';
 import { fetchKVS, toSorted } from './utils';
 import { createQuery } from '@tanstack/solid-query';
 import { A } from '@solidjs/router';
+import { Breadcrumbs, Node } from './components';
 
 const App: ParentComponent = (props) => {
     const kvsQuery = createQuery(() => ({
@@ -15,19 +14,21 @@ const App: ParentComponent = (props) => {
         queryFn: fetchKVS,
         enabled: state.authenticated,
     }));
+    console.log(state.authenticated);
 
     return (
         <>
             <header class="supports-backdrop-blur:bg-background/60 bg-background/95 sticky top-0 z-40 w-full border-b bg-black backdrop-blur">
                 <div class="container flex h-14 items-center">
                     <div class="ml-4 flex">
-                        <a
+                        <A
                             href="/"
+                            onClick={() => setState({ kv: '', path: '' })}
                             class="mr-6 flex items-center space-x-2 no-underline"
                         >
                             <img src={vault} class="h-5 w-5" />
                             <span class="inline-block font-bold text-white">Vault</span>
-                        </a>
+                        </A>
                         <nav class="flex items-center space-x-6 text-sm font-medium">
                             <Show when={state.authenticated}>
                                 <A
