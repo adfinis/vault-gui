@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/tauri';
 import { onMount, type Component } from 'solid-js';
 import toast from 'solid-toast';
-import { setState } from './state';
+import { setState } from '@/state';
 import { useNavigate } from '@solidjs/router';
 
 const Login: Component = () => {

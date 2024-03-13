@@ -6,9 +6,9 @@ import {
     folder,
 } from 'solid-heroicons/outline';
 import { createSignal, For, JSXElement, Show, type Component } from 'solid-js';
-import Item from './Item';
 import { createQuery } from '@tanstack/solid-query';
-import { fetchPaths, toSorted } from './utils';
+import { fetchPaths, toSorted } from '@/utils';
+import { Item } from '@/components';
 
 type NodeProps = {
     icon: { path: JSXElement; outline: boolean; mini: boolean };

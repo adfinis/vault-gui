@@ -1,8 +1,8 @@
 import { writeText } from '@tauri-apps/api/clipboard';
 import { For, Show, type Component } from 'solid-js';
 import toast from 'solid-toast';
-import { fetchSecret } from './utils';
-import { state } from './state';
+import { fetchSecret } from '@/utils';
+import { state } from '@/state';
 import { createQuery } from '@tanstack/solid-query';
 
 const SecretView: Component = () => {
@@ -34,7 +34,7 @@ const SecretView: Component = () => {
                     </Show>
                     <Show when={query.isSuccess}>
                         <For each={Object.entries(query.data)}>
-                            {([key, value]) => (
+                            {([key, value]: [string, string]) => (
                                 <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
                                     <th
                                         scope="row"

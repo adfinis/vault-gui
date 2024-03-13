@@ -1,6 +1,6 @@
 import { For, Show, createSignal } from 'solid-js';
-import { setState, state } from './state';
-import { splitPath } from './utils';
+import { setState, state } from '@/state';
+import { splitPath } from '@/utils';
 import { createQuery, useQueryClient } from '@tanstack/solid-query';
 import { Icon } from 'solid-heroicons';
 import { arrowPath } from 'solid-heroicons/outline';
