@@ -4479,9 +4479,9 @@ dependencies = [
 
 [[package]]
 name = "vaultrs"
-version = "0.7.0"
+version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "28084ac780b443e7f3514df984a2933bd3ab39e71914d951cdf8e4d298a7c9bc"
+checksum = "0bb996bb053adadc767f8b0bda2a80bc2b67d24fe89f2b959ae919e200d79a19"
 dependencies = [
  "async-trait",
  "bytes",
@@ -4499,9 +4499,9 @@ dependencies = [
 
 [[package]]
 name = "vaultrs-login"
-version = "0.1.7"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ef6abbcb9e3ee9a56e46416d7ecd75ad47cf5a6f293b42123a195d754f8746f0"
+checksum = "86ea45aaada57bbe5960486005da6d211200914e3ae51f8a3ab26c2c802d937a"
 dependencies = [
  "async-trait",
  "serde",
