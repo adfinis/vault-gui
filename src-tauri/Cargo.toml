@@ -22,7 +22,7 @@ vaultrs = "0.7.2"
 lazy_static = "1.4.0"
 mutex = "0.1.0"
 vaultrs-login = { version = "0.2.1", features = ["oidc"] }
-tokio = { version = "1.36.0", features = ["full"] }
+tokio = { version = "1.37.0", features = ["full"] }
 
 [features]
 default = [ "custom-protocol" ]
