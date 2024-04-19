@@ -25,10 +25,10 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "20.12.7",
-    "@typescript-eslint/eslint-plugin": "7.6.0",
-    "@typescript-eslint/parser": "7.6.0",
+    "@typescript-eslint/eslint-plugin": "7.7.0",
+    "@typescript-eslint/parser": "7.7.0",
     "autoprefixer": "10.4.19",
-    "@tanstack/solid-query-devtools": "^5.29.3",
+    "@tanstack/solid-query-devtools": "^5.30.6",
     "concurrently": "^8.2.2",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
@@ -50,7 +50,7 @@
   "dependencies": {
     "@solid-primitives/local-store": "^1.1.4",
     "@solidjs/router": "^0.13.2",
-    "@tanstack/solid-query": "^5.29.3",
+    "@tanstack/solid-query": "^5.30.6",
     "@tauri-apps/api": "1.5.3",
     "@tauri-apps/cli": "1.5.11",
     "solid-heroicons": "^3.2.4",
