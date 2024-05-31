@@ -43,7 +43,7 @@
     "stylelint-config-standard": "^36.0.0",
     "tailwindcss": "3.4.3",
     "typescript": "5.4.5",
-    "vite": "5.2.9",
+    "vite": "5.2.12",
     "vite-plugin-solid": "2.10.2",
     "vite-plugin-tauri": "3.3.0"
   },
