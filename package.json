@@ -54,7 +54,7 @@
     "@tauri-apps/api": "1.5.4",
     "@tauri-apps/cli": "1.5.12",
     "solid-heroicons": "^3.2.4",
-    "solid-js": "1.8.15",
+    "solid-js": "1.8.20",
     "solid-toast": "^0.5.0"
   }
 }
