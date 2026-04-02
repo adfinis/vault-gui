@@ -19,7 +19,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - uses: cardinalby/git-get-release-action@v1
         id: get-release
@@ -42,19 +42,19 @@ jobs:
           version: latest
 
       - name: Setup node and Cache .pnpm-store
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: latest
           cache: "pnpm"
 
       - name: Rust setup
-        uses: actions-rs/toolchain@v1
+        uses: actions-rs/toolchain@63eb9591781c46a70274cb3ebdf190fce92702e8 # v1
         with:
           toolchain: stable
           profile: minimal
 
       - name: Set up cargo cache
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         continue-on-error: false
         with:
           path: |
@@ -67,7 +67,7 @@ jobs:
           restore-keys: ${{ runner.os }}-cargo-
 
       - name: Install cargo-edit
-        uses: actions-rs/install@v0.1
+        uses: actions-rs/install@9cf8dbcf012ec25a73b7eaa042366b1e7e617347 # v0.1
         with:
           crate: cargo-edit
           version: latest
@@ -82,7 +82,7 @@ jobs:
         run: pnpm install
 
       - name: Build
-        uses: tauri-apps/tauri-action@v0
+        uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5 # action-v0.6.2
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
@@ -95,7 +95,7 @@ jobs:
     needs: assets
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: adjust version
         run: |
@@ -103,7 +103,7 @@ jobs:
           sed -i "s/pkgver=\"0.0.0\"/pkgver=\"${VERSION#v}\"/" PKGBUILD
 
       - name: Release AUR package
-        uses: jbouter/aur-releaser@v0.0.9
+        uses: jbouter/aur-releaser@e25a625ecb50c0f9988ae47547f1bb698bb8a01c # v0.0.9
         with:
           pkgname: vault-gui-bin
           pkgbuild: ./PKGBUILD

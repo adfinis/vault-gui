@@ -17,10 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Semantic Release
-        uses: go-semantic-release/action@v1
+        uses: go-semantic-release/action@453e003c94ddb9c64e7ea4153794ef69e477259e # v1
         id: semrel
         with:
           allow-initial-development-versions: true
